@@ -22,7 +22,7 @@ load_dotenv()
 def initialize_environment():
     """Initialize environment variables and Google Cloud settings."""
     os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "search_keys.json"
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/DELL/Downloads/13-Google-GenAI-Hack-24/GenAI-Google--Hack-24/Built-RAG/search_keys.json"
     
     PROJECT_ID = "vision-forge-414908"
     REGION = "us-central1"
@@ -35,7 +35,7 @@ def create_genai_model():
 def get_product_info(product):
     """Retrieve product information using Google Search Retrieval."""
     model_ground = create_genai_model()
-    prompt = f"only give me the nutritional(benefits/harms) content regarding the consumptions of {product}. Also if there is any recent news regarding {product}"
+    prompt = f"only give me the nutritional(benefits/harms) content regarding the consumptions of {product}. Also if there is any recent news regarding if the {product} has some false claims. Also find if the product is from a small busiess or not"
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     response = model_ground.generate_content(prompt, tools=[tool])
     return response.candidates[0].content.parts[0].text
@@ -75,15 +75,19 @@ def create_chat_prompt():
                         Category 6: Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories)
                         Your final answer should only contain tags among one option of each category based on product nutrition analysis.
                         If the answer is None just drop that category output.
-                        Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product.
+                        -Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product.
                         Your next input will be the info of the person, the name of the product, and screenshot of the ingredients
+                        Make sure you are thorough about all the different tags before printing, all the tags category should be printed, and only the tags
+                        
             '''
         ),
         HumanMessagePromptTemplate.from_template(
             template='''The person's info is as follows:
                 Person info: I am a {gender} who is {age} years old, my weight is {weight}, my height is {height}, I am {diet_type} and I want to {health_goal}. Allergic to {allergen}.
                 Product info: {product_info_str}
-                'image_url': "data:image/jpeg;base64,{image_data}"'''
+                'image_url': "data:image/jpeg;base64,{image_data}
+                
+                "'''
         ),
     ])
 
