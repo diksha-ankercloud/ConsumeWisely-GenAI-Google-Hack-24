@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <link rel='stylesheet' href='https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css'>
+  <link rel="stylesheet" href="{{url_for('static',filename='style-old.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='style1.css')}}">
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  
+</head>
+<style>
+  .category-button {
+      margin: 5px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+
+  .category-button:hover {
+      background-color: #0056b3;
+  }
+</style>
+<body>
+<!-- partial:index.partial.html -->
+<nav class="flex-nav">
+  <div class="container">
+    <div class="grid menu">
+      <div class="column-xs-8 column-md-6">
+        <p id="highlight">ShopShop</p>
+      </div>
+      <div class="column-xs-4 column-md-6">
+        <a href="#" class="toggle-nav">Menu <i class="ion-navicon-round"></i></a>
+        <ul>
+          <li class="nav-item"><a href="#">Products</a></li>
+          
+          &nbsp;
+          <li class="nav-item"><a href="#">About</a></li>
+          &nbsp;
+          <li class="nav-item"><a href="#">My Account</a></li>
+          &nbsp;
+          <a href="" class="btn btn-primary px-3 d-none d-lg-block" id="chatbot-button">Chatbot</a>
+          &nbsp;&nbsp;
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cart">Cart (<span class="total-count"></span>)</button>     
+           </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <div class="grid second-nav">
+      <div class="column-xs-12">
+        <nav>
+          <ol class="breadcrumb-list">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Biscuits</a></li>
+            <li class="breadcrumb-item active">NutriChoice</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <div class="grid product">
+      <div class="column-xs-12 column-md-7">
+        <div class="product-gallery">
+          <div class="product-image">
+            <img src="{{ url_for('static', filename='oreo5.jpg') }}" alt="Icon">
+          </div>
+          <ul class="image-list">
+            <li class="image-item"><img src="{{ url_for('static', filename='oreo4.png') }}" alt="Icon"></li>
+            <li class="image-item"><img src="{{ url_for('static', filename='Screenshot 2024-09-17 095538.png') }}"></li>
+            <li class="image-item"><img src="{{ url_for('static', filename='back.jpg') }}"></li>
+          </ul>
+        </div>
+      </div>
+      <div class="column-xs-12 column-md-5">
+        <h1>Oreo Chocolate Sandwich</h1>
+        <h2>₹30</h2>
+        <div class="description">
+                    <p>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="#15b300" d="M20 4v16H4V4zm2-2H2v20h20zM12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6s6-2.69 6-6s-2.69-6-6-6"/></svg>
+                      OREO Chocolate Sandwich Cookies layer a rich creme filling between the bold taste of two chocolate wafers—making them milk's favorite cookie.            </p>
+        </div>
+        <div class="product-labels">
+          <span class="label veg">Calories</span> 
+          <span class="label gluten-free">Gluten</span>
+          <span class="label non-veg">Fat</span>
+          <span class="label non-veg">Sugar</span>
+        </div><br>
+        <a href="#" data-name="Oreo Chocolate Cookies" data-price="30" class="add-to-cart btn btn-primary">Add to cart</a>
+        <br>
+        <br>
+        <div id="llm-response-section">
+          <br>
+        </div>
+        </div>
+        </div>
+        <div class="modal fade" id="cart" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cart</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="show-cart table">
+                  
+                </table>
+                <div>Total price: $<span class="total-cart"></span></div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Order now</button>
+              </div>
+        </div>
+      </div>
+    </div>
+    <div class="chat"  id="chat-div" style="display: none;">
+      <div class="chat-title">
+        <h1>Shopmart Assistant</h1>
+        <figure class="avatar">
+          <img src="{{ url_for('static', filename='shopping.png') }}" alt="Icon">
+        </figure>
+      </div>
+      <div class="messages">
+        <div class="messages-content">
+          <div class="message new">
+            <figure class="avatar">
+              <img src="{{ url_for('static', filename='icon2.jfif') }}" alt="Icon">
+            </figure> Hi,There I can help you make the right choice for your shopping experience.
+          </div>
+        </div>
+      </div>
+      <div class="message-box">
+        <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
+        <br>
+        <input type="file" class="myFile" id="myFile" name="filename" onchange="previewImage(event)">
+        <label for="myFile" class="myFileLabel">Choose a file</label>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="image-preview" style="display: none; max-width: 150px; max-height: 150px;" />
+        <button type="submit" class="message-submit" onclick="insertMessage()">Send</button>
+        <div id="response" class="response-container"></div>
+      </div>
+</main>
+<footer>
+  <div class="grid related-products">
+    <div class="column-xs-12">
+      <h3>You may also like</h3>
+    </div>
+    <div class="column-xs-12 column-md-4">
+      <img src="{{ url_for('static', filename='marie.jfif') }}">
+      <h4>Britannia Marie Gold</h4>
+      <p class="price">₹50</p>
+    </div>
+    <div class="column-xs-12 column-md-4">
+      <img src="{{ url_for('static', filename='milkbikis.jfif') }}" alt="Icon">
+      <h4>Milk Bikis</h4>
+      <p class="price">₹ 29.99</p>
+    </div>
+    <div class="column-xs-12 column-md-4">
+      <img src="{{ url_for('static', filename='jimjam.jfif') }}" alt="Icon">
+      <h4>Jim Jam</h4>
+      <p class="price">₹ 30</p>
+    </div>
+  </div>
+</div>
+  <div class="grid">
+    <div class="column-xs-12">
+      <p class="copyright">&copy; Copyright 2024 <a href="https://ankercloud.com" title="Katherine Kato"  target="_blank">Anker Cloud</a></p>
+    </div>
+  </div>
+</footer>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'>
+  
+</script>
+<script  src="{{ url_for('static', filename='script-old.js')}}"></script>
+<!-- partial -->
+  <script>
+    const activeImage = document.querySelector(".product-image .active");
+const productImages = document.querySelectorAll(".image-list img");
+const navItem = document.querySelector('a.toggle-nav');
+
+function changeImage(e) {
+  activeImage.src = e.target.src;
+}
+
+function toggleNavigation(){
+  this.nextElementSibling.classList.toggle('active');
+}
+
+productImages.forEach(image => image.addEventListener("click", changeImage));
+navItem.addEventListener('click', toggleNavigation);
+  </script>
+  
+  <script>
+    // Toggle chat window display
+    document.getElementById("chatbot-button").addEventListener("click", function(e) {
+      e.preventDefault();
+      var div = document.getElementById("chat-div");
+    
+      // Check current display status and toggle it
+      if (div.style.display === "none") {
+          div.style.display = "flex"; // Show the div
+      } else {
+          div.style.display = "none";  // Hide the div
+      }
+    });
+    
+    // Handle message submission
+    function insertMessage() {
+      var msg = document.querySelector(".message-input").value.trim();
+      var fileInput = document.getElementById("myFile").files[0]; // Get the uploaded image file
+    
+      if (msg === "" && !fileInput) {
+        alert('Please enter a message or upload an image!');
+        return false;
+      }
+    
+      var messageDiv = document.createElement("div");
+      messageDiv.className = "message message-personal";
+      messageDiv.textContent = msg;
+    
+      document.querySelector(".messages-content").appendChild(messageDiv);
+      messageDiv.classList.add("new");
+    
+      document.querySelector(".message-input").value = ""; // Clear the input field
+    
+      // If an image is uploaded, preview it
+      if (fileInput) {
+        previewImage(fileInput);
+      }
+    
+      sendToLLM(msg, fileInput);  // Send both text and image to the server
+    }
+    
+    // Function to preview the uploaded image
+    function previewImage(file) {
+      const imagePreview = document.createElement("img");
+      imagePreview.style.maxWidth = "150px";  // Display the image with smaller size
+      imagePreview.style.maxHeight = "150px";
+      imagePreview.style.margin = "10px"; 
+      imagePreview.style.float = "right";    // Add space around the image
+      imagePreview.className = "message-image";
+    
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imagePreview.src = e.target.result;
+        document.querySelector(".messages-content").appendChild(imagePreview); // Append the image preview to the chat
+      };
+      reader.readAsDataURL(file);  // Convert the file to a data URL
+    }
+    
+    // Function to send both message and image to the server
+    function sendToLLM(msg, fileInput) {
+      const formData = new FormData();
+      formData.append('message', msg);  // Add the text input to the form data
+    
+      if (fileInput) {
+        formData.append('image', fileInput);  // Add the image file to the form data if it exists
+      }
+    
+      // Sending FormData directly without setting content-type (it will be set automatically)
+      fetch('/get_response', {
+        method: 'POST',
+        body: formData  // Send form data directly
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Display the LLM response in the chat
+        var messageDiv = document.createElement("div");
+        messageDiv.className = "message new";
+        
+        // Avatar for bot response
+
+        // Append LLM response to the message div
+        messageDiv.innerHTML += data.message;
+        
+        document.querySelector(".messages-content").appendChild(messageDiv);
+        messageDiv.classList.add("new");
+        const responseSection = document.getElementById("llm-response-section");
+        responseSection.innerHTML = `<pre>${data.message || "Response not available"}</pre>`;
+        const categorySection = document.getElementById("category-buttons-section");
+        categorySection.innerHTML = ''; // Clear previous buttons
+
+        const categoryPattern = /Category \d+: ([^Category]*)/g;
+        let match;
+        while ((match = categoryPattern.exec(data.message)) !== null) {
+          const categoryValues = match[1].trim().split(/,\s*/); // Split by comma and trim spaces
+          categoryValues.forEach(value => {
+              const button = document.createElement("button");
+              button.textContent = value;
+              button.className = 'category-button'; // Add CSS class for styling
+              categorySection.appendChild(button);
+          })
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+    function displayResponse(data) {
+            const container = document.getElementById('response');
+
+            let html = '';
+
+            if (data['Product Name']) {
+                html += `<div class="response-section"><h2>Product Name</h2><p>${data['Product Name']}</p></div>`;
+            }
+
+            for (let i = 1; i <= 5; i++) {
+                if (data[`Category ${i}`]) {
+                    html += `<div class="response-section"><h2>Category ${i}</h2><p>${data[`Category ${i}`]}</p></div>`;
+                }
+            }
+
+            if (data['Advice']) {
+                html += `<div class="response-section"><h2>Advice</h2><p>${data['Advice']}</p></div>`;
+            }
+
+            if (data['Alternative Product']) {
+                html += `<div class="response-section"><h2>Alternative Organic Product</h2><p>${data['Alternative Product']}</p></div>`;
+            }
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
