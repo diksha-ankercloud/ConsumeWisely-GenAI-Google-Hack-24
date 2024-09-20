@@ -10,7 +10,7 @@ from vertexai.preview.generative_models import GenerativeModel
 from PIL import Image
 REGION = "us-central1"
 vertexai.init(project="vision-forge-414908", location="us-central1")
-os.environ['GOOGLE_API_KEY'] ="AIzaSyA-Wq-bd6YjRHDkepVfsZq12mKA2r9zWac"
+os.environ['GOOGLE_API_KEY'] =""
 genai.configure(api_key = os.environ['GOOGLE_API_KEY'])
 
 app = Flask(__name__)
