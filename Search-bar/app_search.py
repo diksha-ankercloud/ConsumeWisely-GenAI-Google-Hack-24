@@ -13,11 +13,11 @@ app = Flask(__name__)
 # Load environment variables
 load_dotenv()
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "path/to/your/credentials.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/DELL/Downloads/13-Google-GenAI-Hack-24/GenAI-Google--Hack-24/Built-RAG/search_keys.json"
 os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
 
-PROJECT_ID = "your-project-id"
-REGION = "us-central1"
+PROJECT_ID = "vision-forge-414908"  # @param {type:"string"}
+REGION = "us-central1"  # @param {type: "string"}
 
 vertexai.init(project=PROJECT_ID, location=REGION)
 
@@ -28,7 +28,7 @@ def get_product_info(product):
         search_depth="advanced",
         include_answer=True,
         include_raw_content=True,
-        include_images=True
+        include_images=False
     )
     
     PROMPT = f"Give me the ingredients that are present in {product}"
@@ -53,17 +53,17 @@ def get_product_info(product):
     # Extract information from response
     matches = re.findall(r'\(\*\*\*(.*?)\*\*\*\)', response_string)
     
-    # Get image URL (assuming it's in the Tavily response)
-    image_url = first_reply.get('image_url', '')
-    
-    return matches, image_url
+    return {
+        'tavily_ingredients': ingredients,
+        'llm_results': matches
+    }
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         product_name = request.form['product_name']
-        results, image_url = get_product_info(product_name)
-        return render_template('results.html', product_name=product_name, results=results, image_url=image_url)
+        product_info = get_product_info(product_name)
+        return render_template('results.html', product_name=product_name, product_info=product_info)
     return render_template('index.html')
 
 if __name__ == '__main__':

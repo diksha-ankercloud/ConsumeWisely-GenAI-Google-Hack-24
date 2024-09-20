@@ -4,30 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysis Results for {{ product_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2 { color: #333; }
+        ul { padding-left: 20px; }
+        .section { margin-bottom: 30px; }
+        .back-link { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; }
+        .button-container { display: flex; justify-content: space-between; margin-top: 20px; }
+        .button { padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border: none; cursor: pointer; }
+        .personalize-button { background-color: #008CBA; }
+    </style>
 </head>
 <body>
     <h1>Analysis Results for {{ product_name }}</h1>
-    <!-- Display analysis results -->
-    {% if results %}
-        <h2>Product Information:</h2>
-        <ul>
-            <li>Taste: {{ results[0] }}</li>
-            <li>Nutritional Info: {{ results[1] }}</li>
-            <li>Dietary Suitability: {{ results[2] }}</li>
-            <li>Sustainability: {{ results[3] }}</li>
-            <li>Recent News: {{ results[4] }}</li>
-            <li>Ingredients: {{ results[5] }}</li>
-        </ul>
-    {% endif %}
-    <!-- Display product image if available -->
-    {% if image_url %}
-        <h2>Product Image:</h2>
-        <img src="{{ image_url }}" alt="{{ product_name }}" style="max-width: 500px;">
-    {% endif %}
-    <br>
-    <!-- Link to analyze another product -->
-    <a href="/">Analyze Another Product</a>
+    
+    <div class="section">
+        <h2>Tavily Search Results:</h2>
+        <p><strong>Ingredients:</strong> {{ product_info.tavily_ingredients }}</p>
+    </div>
+
+    <div class="section">
+        <h2>LLM Analysis Results:</h2>
+        {% if product_info.llm_results %}
+            <ul>
+                <li><strong>Taste:</strong> {{ product_info.llm_results[0] }}</li>
+                <li><strong>Nutritional Info:</strong> {{ product_info.llm_results[1] }}</li>
+                <li><strong>Dietary Suitability:</strong> {{ product_info.llm_results[2] }}</li>
+                <li><strong>Sustainability:</strong> {{ product_info.llm_results[3] }}</li>
+                <li><strong>Recent News:</strong> {{ product_info.llm_results[4] }}</li>
+                <li><strong>LLM-provided Ingredients:</strong> {{ product_info.llm_results[5] }}</li>
+            </ul>
+        {% else %}
+            <p>No LLM results available.</p>
+        {% endif %}
+    </div>
+
+    <a href="/" class="back-link">Analyze Another Product</a>
+    <div class="button-container"></div>
+        
+        <button class="button personalize-button">Personalize Your Order</button>
+    </div>
 </body>
 </html>
-
-Version 3 of 3
