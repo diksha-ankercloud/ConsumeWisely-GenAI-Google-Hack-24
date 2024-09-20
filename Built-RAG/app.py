@@ -30,7 +30,7 @@ def initialize_environment():
 
 def create_genai_model():
     """Create and return a GenerativeModel instance."""
-    return GenerativeModel("gemini-1.5-pro")
+    return GenerativeModel("gemini-1.5-flash-001")
 
 def get_product_info(product):
     """Retrieve product information using Google Search Retrieval."""

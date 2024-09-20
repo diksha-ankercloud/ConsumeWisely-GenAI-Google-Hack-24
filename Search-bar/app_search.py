@@ -37,7 +37,7 @@ def get_product_info(product):
     ingredients = first_reply.get('content')
     
     # Vertex AI processing
-    model = GenerativeModel("gemini-1.5-flash")
+    model = GenerativeModel("gemini-1.5-flash-001")
     prompt_2 = f"""The product is {product} and the ingredients are {ingredients}, now do the following.
     Category 1: Can you give me a brief of taste on what the {product} is and add that full info in(*** ***).
     Category 2: Also only list the nutritional (benefits/harms) if there are any.
