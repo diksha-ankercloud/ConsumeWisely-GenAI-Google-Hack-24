@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results for {{ product_name }}</title>
+</head>
+<body>
+    <h1>Analysis Results for {{ product_name }}</h1>
+    <!-- Display analysis results -->
+    {% if results %}
+        <h2>Product Information:</h2>
+        <ul>
+            <li>Taste: {{ results[0] }}</li>
+            <li>Nutritional Info: {{ results[1] }}</li>
+            <li>Dietary Suitability: {{ results[2] }}</li>
+            <li>Sustainability: {{ results[3] }}</li>
+            <li>Recent News: {{ results[4] }}</li>
+            <li>Ingredients: {{ results[5] }}</li>
+        </ul>
+    {% endif %}
+    <!-- Display product image if available -->
+    {% if image_url %}
+        <h2>Product Image:</h2>
+        <img src="{{ image_url }}" alt="{{ product_name }}" style="max-width: 500px;">
+    {% endif %}
+    <br>
+    <!-- Link to analyze another product -->
+    <a href="/">Analyze Another Product</a>
+</body>
+</html>
+
+Version 3 of 3
