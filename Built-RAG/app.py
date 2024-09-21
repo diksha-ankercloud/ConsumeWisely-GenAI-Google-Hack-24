@@ -21,7 +21,7 @@ load_dotenv()
 
 def initialize_environment():
     """Initialize environment variables and Google Cloud settings."""
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+    #os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/DELL/Downloads/13-Google-GenAI-Hack-24/GenAI-Google--Hack-24/Built-RAG/search_keys.json"
     
     PROJECT_ID = "vision-forge-414908"
@@ -43,7 +43,7 @@ def get_product_info(product):
 def create_chat_model():
     """Create and return a ChatGoogleGenerativeAI instance."""
     return ChatGoogleGenerativeAI(
-        model="gemini-1.5-pro",
+        model="emini-1.5-flash-001",
         temperature=0,
         max_tokens=None,
         timeout=None,
