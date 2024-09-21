@@ -1,0 +1,7 @@
+getpass
+os
+python-dotenv
+langchain-core
+ipython
+langchain-google-genai
+google-cloud-aiplatform
