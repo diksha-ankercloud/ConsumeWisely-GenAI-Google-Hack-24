@@ -1,0 +1,4 @@
+Flask==2.3.2
+python-dotenv==1.0.0
+google-cloud-aiplatform==1.36.0
+vertexai==0.0.1
