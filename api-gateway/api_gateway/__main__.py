@@ -17,49 +17,27 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import vertexai
 from vertexai.generative_models import GenerativeModel, Tool, grounding
 import re
+import os
+from dotenv import load_dotenv
+import base64
+from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
+from langchain_core.messages import SystemMessage
+from langchain_google_genai import ChatGoogleGenerativeAI
+import vertexai
+from vertexai.generative_models import (
+    GenerativeModel,
+    Tool,
+    grounding,
+)
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app) 
-
-def download_image(image_url, folder_path, image_name=None):
-    try:
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        response = requests.get(image_url)
-        response.raise_for_status() 
-        if not image_name:
-            image_name = image_url.split("/")[-1]
-        image_path = os.path.join(folder_path, image_name)
-        with open(image_path, 'wb') as image_file:
-            image_file.write(response.content)
-        return image_path
-        print(f"Image downloaded and saved as {image_path}")
-    except Exception as e:
-        print(f"Failed to download image. Error: {e}")
-
-def download_images(image_urls, folder_path='sample-images'):
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)  # Create the folder if it doesn't exist
-
-    for i, image_url in enumerate(image_urls):
-        try:
-            image_name = image_url.split("/")[-1].split("?")[0]  # Clean up the image name
-            image_path = os.path.join(folder_path, image_name)
-            print(f'Downloading image: {image_name}')
-
-            # Get the image content from the URL
-            response = requests.get(image_url)
-            response.raise_for_status()  # Check if the request was successful
-            
-            # Write the image to the file
-            with open(image_path, 'wb') as image_file:
-                image_file.write(response.content)
-            
-            print(f'Image saved to: {image_path}')
-        except requests.exceptions.RequestException as e:
-            print(f'Error downloading {image_url}: {e}')
-        except Exception as e:
-            print(f'Unexpected error: {e}')
 
 products = [
   {
@@ -291,104 +269,14 @@ def get_product(product_id):
 
     return "Not Found"
  
-@app.route('/chat-bot')
-def chat-bot():
-    request_message = request.form.get('message')
-    print('Message:', request_message)
-    url_pattern = r'(https?://[^\s]+)'
-    url_match = re.search(url_pattern, request_message)
-    if url_match:
-        image_url = url_match.group(0)
-        print(f"Found URL: {image_url}")
-        request_image=download_image(image_url,folder_path='images')
-    else:   
-        request_image = request.files.get('image')
-        print('Image:', request_image)
+
+def initialize_environment():
+    """Initialize environment variables and Google Cloud settings."""
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/DELL/Downloads/13-Google-GenAI-Hack-24/GenAI-Google--Hack-24/vision-forge-414908-d792f2fc2ff6.json"
     
-    prompt="""
-I will provide an image of a product ingredients confirms where the products is safe to consume for humans including kids, pregnant women, old people, diabetes, heart patient ,etc...
-    Consumption : how frequently can i consume:
-    1. daily
-    2. weekly
-    3. monthly
-    Category :
-    1. nutritional
-    2. recreations
-    3.  or regular consumption.
-
-    Allergies: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any claims verify if it is true provide the resource for this details. if any ingredients can affect or trigger the allergy then provide a caution information.
-                                                            
-    Diet Type:  Provide who all can consume based on their diet type like: vegan, keto, gluten-Free.
-
-    ### Provide the information in terms of a label like it contains gluten ,excess sugar bad for diabetics.. remove all the filler words the output should be concise and exact not like a paragraph.                                                 
-    ### Provide the right details and information if the product is not safe to consume and affects the health.
-    ### Highlight and Recommend a product separately on the next line under organic and healthy products with a complete name and brand name of that single product which falls with in the budget. maintain the diet type, also provide the alternative product price as a category note all the above categories it should be mostly nutritional, sustainable, contains no allergy.
-    ### Recommend a product which should also fall in the same product type but a healthier and safer choich if its biscuit then recommend biscuit, if its chips then recommend chips ,etc. like a if i upload a cream biscuit the alternative recommended product should also be a cream biscuit but a healthier one.    ### Provide what category does this product fall into remember to mention all the product category under the provided category. mention all the categories that the product fall into. keep the response short and crisp.           
-    ### Output Format for both the current product and recommended product details separately Provide only necessary labels, remember the responses will be reflected in the UI with correct punctuation and these headers in first letter should be capital everything in new line:      
-    Product Name:
-    Brand: 
-    Price Range:
-    Ingredients: 
-    Frequency: 
-    All the above Categories:
-    <br>
-    Recommended Product Name:
-    Brand:
-    Price Range:
-    Ingredients:
-    Frequency:
-    Categories:
-"""
-    request_message=prompt
-    print(request_message,request_image)
-    image = Image.open(request_image)
-    generative_multimodal_model = genai.GenerativeModel("gemini-1.5-flash-001")
-    response = generative_multimodal_model.generate_content([request_message,image])
-    print(response.__dict__)
-    ans=response._result.candidates[0].content.parts[0].text
-    ans=ans.replace('*','')
-    ans=ans.replace('##','')
-    ans=ans.split('\n\n')
-    answer=""
-    for i in (ans):
-        answer+=i.strip()
-    print('Answer:',answer)
-    match = re.search(r'Product Name:\s*(.*?):', answer)
-    match1 = re.search(r'Alternative Product Name:\s*(.*)', answer)  
-    if match1:
-        alternate_product = match1.group(1).strip()
-        print(f"Product1: {alternate_product}")
-    if match:
-        alternate_product = match.group(1).strip()
-        print(f"Product: {alternate_product}")
-    else:
-        print("No alternate product found.")
-    output_json={
-        "message": answer
-    }
-    return output_json
-
-@app.route('/get_image')
-def get_image():
-    searchTerm=request.form.get('searchTerm')
-    service = build("customsearch", "v1",
-            developerKey=apikey)
-    search_url = "https://www.googleapis.com/customsearch/v1"  
-    params = {
-        "q": searchTerm,
-        "cx": cxid,
-        "searchType": "image",
-        "num": 2,
-        "fileType": "jpg",
-        "imgType": "photo",
-        "key": apikey,
-    }
-    response = requests.get(search_url, params=params)
-    results = response.json()
-
-    image_urls = [item["link"] for item in results.get("items", [])]
-    download_images(image_urls)
-    return image_urls
+    PROJECT_ID = "vision-forge-414908"
+    REGION = "us-central1"
+    vertexai.init(project=PROJECT_ID, location=REGION)
 
 def create_genai_model():
     """Create and return a GenerativeModel instance."""
@@ -397,7 +285,7 @@ def create_genai_model():
 def get_product_info(product):
     """Retrieve product information using Google Search Retrieval."""
     model_ground = create_genai_model()
-    prompt = f"only give me the nutritional(benefits/harms) content regarding the consumptions of {product}. Also if there is any recent news regarding if the {product} has some false claims. Also find if the product is from a small busiess or not"
+    prompt = f"only give me the nutritional (benefits/harms) content regarding the consumption of {product}. Also if there is any recent news regarding if the {product} has some false claims. Also find if the product is from a small business or not."
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     response = model_ground.generate_content(prompt, tools=[tool])
     return response.candidates[0].content.parts[0].text
@@ -415,47 +303,15 @@ def create_chat_model():
 def create_chat_prompt():
     """Create and return a ChatPromptTemplate instance."""
     return ChatPromptTemplate.from_messages([
-        SystemMessage(content='''You are well experienced dietician and nutritionist. You will be given the Age, height, weight and dietary precautions and goals of the person. 
-                        You will be given a product and its ingredients select one from each category based on the ingredients and health goals of the person.
-                        Category 1: how frequently can i consume it based on my weight goals:
-                        1. daily consumption
-                        2. weekly consumption
-                        3. monthly consumption
-                        Category 2: and as per my diet is this food :
-                        1. nutritional
-                        2. recreations
-                        3.  or regular consumption for me
-
-                        Category 3: If the food product follows any of the following:
-                        1. Organic
-                        2. Sustainable: 
-                        3. Supports Small Businesses
-                        4. Animal Cruelty-Free: 
-
-                        Category 4: flag alergens if they are related to my allergy otherwise don't flag a warning
-                        Category 5: you need to also flag diet type match this with the input of user info and flag if it is suitable for their dietary type or restrictions.
-                        Category 6: Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories)
-                        Your final answer should only contain tags among one option of each category based on product nutrition analysis.
-                        If the answer is None just drop that category output.
-                        -Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product.
-                        Your next input will be the info of the person, the name of the product, and screenshot of the ingredients
-                        Make sure you are thorough about all the different tags before printing, all the tags category should be printed, and only the tags
-                        
-            '''
-        ),
+        SystemMessage(content='''You are a well-experienced dietician and nutritionist. You will be given the age, height, weight, and dietary precautions and goals of the person.
+                        You will be given a product and its ingredients to analyze. The goal is to categorize how often the product can be consumed, whether it fits the user's diet, and if it follows sustainability practices. 
+                        Respond based on health analysis using appropriate tags.'''),
         HumanMessagePromptTemplate.from_template(
-            template='''The person's info is as follows:
-                Person info: I am a {gender} who is {age} years old, my weight is {weight}, my height is {height}, I am {diet_type} and I want to {health_goal}. Allergic to {allergen}.
-                Product info: {product_info_str}
-                'image_url': "data:image/jpeg;base64,{image_data}
-                
-                "'''
+            template='''The person's info is:
+                Age: {age}, Gender: {gender}, Weight: {weight}, Height: {height}, Dietary Type: {diet_type}, Health Goal: {health_goal}, Allergens: {allergen}.
+                Product info: {product_info_str}, Image: {image_data}'''
         ),
     ])
-
-def process_image(image_file):
-    """Process the uploaded image file and return base64 encoded data."""
-    return base64.b64encode(image_file.read()).decode("utf-8")
 
 def analyze_product(user_info, product_info, image_data):
     """Analyze the product based on user info and product details."""
@@ -479,84 +335,75 @@ def analyze_product(user_info, product_info, image_data):
 
 @app.route('/analyze_product', methods=['POST'])
 def analyze_product_endpoint():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
+
     user_info = {
-        "age": request.form['age'],
-        "weight": request.form['weight'],
-        "gender": request.form['gender'],
-        "height": request.form['height'],
-        "diet_type": request.form['diet_type'],
-        "health_goal": request.form['health_goal'],
-        "allergen": request.form['allergen']
+        "age": data.get('age'),
+        "weight": data.get('weight'),
+        "gender": data.get('gender'),
+        "height": data.get('height'),
+        "diet_type": data.get('diet_type'),
+        "health_goal": data.get('health_goal'),
+        "allergen": data.get('allergen')
     }
-    product_name = request.form['product_name']
-    image_file = request.files['product_image']
+    
+    product_name = data.get('product_name')
+    image_data_base64 = data.get('image_data')
+
+    if not product_name or not image_data_base64:
+        return jsonify({"error": "Missing required parameters: product_name or image_data"}), 400
 
     product_info = get_product_info(product_name)
-    image_data = process_image(image_file)
-    result = analyze_product(user_info, product_info, image_data)
+    result = analyze_product(user_info, product_info, image_data_base64)
 
     return jsonify({"analysis": result})
 
-def get_detailed_product_info(product):
-    model = GenerativeModel("gemini-1.5-flash-001")
-    
-    # Get ingredients
-    ingredients_prompt = f"What are the ingredients or major composition of {product}?"
-    tool = Tool.from_google_search_retrieval(preview_grounding.GoogleSearchRetrieval())
-    ingredients_response = model.generate_content(ingredients_prompt, tools=[tool])
-    ingredients = ingredients_response.text
+def get_ingre_search(product):
+    prompt = f"what are the ingredients or major composition of {product}"
+    tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
+    model = create_genai_model()
+    response = model.generate_content(prompt, tools=[tool])
+    ingredients = response.candidates[0].content.parts[0].text
+    return ingredients
 
-    # Get additional information
-    prompt = f"""Make sure you compulsory do the followings for {product}:
-    The product is {product} and the ingredients are {ingredients}, now do the following.
+def get_search_info(product, ingredients):
+    prompt = f"""The product is {product} and the ingredients are {ingredients}, now do the following:
     Category 1: Can you give me a brief of taste on what the {product} is and add that full info in(*** ***).
     Category 2: Also only list the nutritional (benefits/harms) if there are any.
     Category 3 (only mention relevant category): look if the product is suitable for a vegan or keto or jain or all diets and flag only the name of that diet of any or multiple suitable in (*** ***).
     Category 4 (single word answer): If the {product} is organic or supports sustainability or small businesses add that in (*** ***).
     Category 5: Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
-    Give me the ingredients of this {product} from the internet (*** ***)"""
-
-    max_attempts = 3
-    attempts = 0
-    llm_results = []
-
-    while attempts < max_attempts and not llm_results:
-        response = model.generate_content(prompt, tools=[tool])
-        response_string = str(response.text)
-        llm_results = re.findall(r'\(\*\*\*(.*?)\*\*\*\)', response_string)
-        attempts += 1
-
-    if not llm_results:
-        llm_results = ["No results obtained after multiple attempts"]
-
-    return {
-        'ingredients': ingredients,
-        'llm_results': llm_results
-    }
-
-@app.route('/get_detailed_product_info', methods=['GET'])
-def get_detailed_product_info_endpoint():
-    product = request.args.get('product')
-    if not product:
-        return jsonify({"error": "Product parameter is required"}), 400
+    Give me the ingredients of this {product} from the internet (*** ***)
+    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None"""
     
-    result = get_detailed_product_info(product)
-    return jsonify(result)
-
-@app.route('/get_ingredients', methods=['GET'])
-def get_ingredients():
-    product = request.args.get('product')
-    if not product:
-        return jsonify({"error": "Product parameter is required"}), 400
-    
-    model = GenerativeModel("gemini-1.5-flash-001")
-    prompt = f"What are the ingredients or major composition of {product}"
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
-    
+    model = create_genai_model()
     response = model.generate_content(prompt, tools=[tool])
-    ingredients = response.candidates[0].content.parts[0].text
-    
-    return jsonify({"product": product, "ingredients": ingredients})
+    return str(response.candidates[0].content.parts[0].text)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4000)
+@app.route('/get_search_info', methods=['POST'])
+def get_search_info_endpoint():
+    data = request.get_json()
+    
+    if not data or 'product' not in data:
+        return jsonify({"error": "No product specified"}), 400
+
+    product = data['product']
+    ingredients = get_ingre_search(product)
+    product_info = get_search_info(product, ingredients)
+
+    return jsonify({
+        "product": product,
+        "ingredients": ingredients,
+        "product_info": product_info
+    })
+
+
+
+if __name__ == "__main__":
+    initialize_environment()
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
