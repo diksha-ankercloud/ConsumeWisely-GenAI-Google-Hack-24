@@ -370,6 +370,7 @@ I will provide an image of a product ingredients confirms where the products is 
 
 @app.route('/get_image')
 def get_image():
+    searchTerm=request.form.get('searchTerm')
     service = build("customsearch", "v1",
             developerKey=apikey)
     search_url = "https://www.googleapis.com/customsearch/v1"  
