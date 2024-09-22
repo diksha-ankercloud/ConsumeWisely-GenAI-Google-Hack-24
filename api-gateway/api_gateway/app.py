@@ -4,12 +4,9 @@ from googleapiclient.discovery import build
 import google.generativeai as genai
 from PIL import Image
 import requests
-import os
-import re
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 import os
-from dotenv import load_dotenv
 import base64
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
 from langchain_core.messages import SystemMessage
@@ -17,25 +14,12 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import vertexai
 from vertexai.generative_models import GenerativeModel, Tool, grounding
 import re
-import os
-from dotenv import load_dotenv
-import base64
-from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
-from langchain_core.messages import SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
-import vertexai
 from vertexai.generative_models import (
     GenerativeModel,
     Tool,
     grounding,
 )
 from flask import Flask, request, jsonify
-
-app = Flask(__name__)
-
-# Load environment variables
-load_dotenv()
-
 app = Flask(__name__)
 CORS(app) 
 
@@ -270,13 +254,27 @@ def get_product(product_id):
     return "Not Found"
  
 
-def initialize_environment():
-    """Initialize environment variables and Google Cloud settings."""
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/DELL/Downloads/13-Google-GenAI-Hack-24/GenAI-Google--Hack-24/vision-forge-414908-d792f2fc2ff6.json"
-    
-    PROJECT_ID = "vision-forge-414908"
-    REGION = "us-central1"
-    vertexai.init(project=PROJECT_ID, location=REGION)
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] ="cred.json"
+vertexai.init(project="vision-forge-414908", location="us-central1")
+
+def download_image(image_url, folder_path, image_name=None):
+    try:
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        response = requests.get(image_url)
+        response.raise_for_status() 
+        if not image_name:
+            image_name = image_url.split("/")[-1]
+        image_path = os.path.join(folder_path, image_name)
+        with open(image_path, 'wb') as image_file:
+            image_file.write(response.content)
+        with open(image_path, 'rb') as image_file:
+            image_data = base64.b64encode(image_file.read()).decode("utf-8")
+        
+        print(f"Image downloaded and saved as {image_path}")
+        return image_data
+    except Exception as e:
+        print(f"Failed to download image. Error: {e}")
 
 def create_genai_model():
     """Create and return a GenerativeModel instance."""
@@ -351,8 +349,8 @@ def analyze_product_endpoint():
     }
     
     product_name = data.get('product_name')
-    image_data_base64 = data.get('image_data')
-
+    image_data_base64 = data.get('image_data',)
+    image_data_base64=download_image(image_data_base64,folder_path='images')
     if not product_name or not image_data_base64:
         return jsonify({"error": "Missing required parameters: product_name or image_data"}), 400
 
@@ -370,15 +368,14 @@ def get_ingre_search(product):
     return ingredients
 
 def get_search_info(product, ingredients):
-    prompt = f"""    prompt = f"""The product is {product} and the ingredients are {ingredients}, now do the following:
+    prompt = f"""The product is {product} and the ingredients are {ingredients}, now do the following:
     Category 1: Can you give me a brief of taste on what the {product} is and add that full info in(*** ***).
     Category 2: Also only list the nutritional (benefits/harms) if there are any.
     Category 3 (only mention relevant category): look if the product is suitable for a vegan or keto or jain or all diets and flag only the name of that diet of any or multiple suitable in (*** ***).
     Category 4 (single word answer): If the {product} is organic or supports sustainability or small businesses add that in (*** ***).
-    Category 5: (only mention relevant category): Mention if the {product} has any major allergens that are found in food in (*** ***).
-    Category 6: Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
+    Category 5: Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
     Give me the ingredients of this {product} from the internet (*** ***)
-    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None""""""
+    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None"""
     
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     model = create_genai_model()
@@ -403,8 +400,89 @@ def get_search_info_endpoint():
     })
 
 
+@app.route('/chat_bot', methods=['POST'])
+def chat_bot():
+    print('Hi there you are inside the function',request)
+    request_message = request.form.get('message')
+    print('Message:', request_message)
+    url_pattern = r'(https?://[^\s]+)'
+    url_match = re.search(url_pattern, request_message)
+    print('URL:',url_match)
+    if url_match:
+        image_url = url_match.group(0)
+        print(f"Found URL: {image_url}")
+        request_image=download_image(image_url,folder_path='images')
+    else:   
+        request_image = request.files.get('image')
+        print('Image:', request_image)
+    
+    prompt="""
+    You are a conversational bot users might provide you a image or just product name get the details of product that you might need per processing and providing a solution.
+you might be provided an image or ulr of a product ingredients confirms where the products is safe to consume for humans including kids, pregnant women, old people, diabetes, heart patient ,etc...
+    Consumption : how frequently can i consume:
+    1. daily
+    2. weekly
+    3. monthly
+    Category :
+    1. nutritional
+    2. recreations
+    3.  or regular consumption.
+
+    Allergies: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any claims verify if it is true provide the resource for this details. if any ingredients can affect or trigger the allergy then provide a caution information.
+                                                            
+    Diet Type:  Provide who all can consume based on their diet type like: vegan, keto, gluten-Free.
+
+    ### Provide the information in terms of a label like it contains gluten ,excess sugar bad for diabetics.. remove all the filler words the output should be concise and exact not like a paragraph.                                                 
+    ### Provide the right details and information if the product is not safe to consume and affects the health.
+    ### Highlight and Recommend a product separately on the next line under organic and healthy products with a complete name and brand name of that single product which falls with in the budget. maintain the diet type, also provide the alternative product price as a category note all the above categories it should be mostly nutritional, sustainable, contains no allergy.
+    ### Recommend a product which should also fall in the same product type but a healthier and safer choich if its biscuit then recommend biscuit, if its chips then recommend chips ,etc. like a if i upload a cream biscuit the alternative recommended product should also be a cream biscuit but a healthier one.    ### Provide what category does this product fall into remember to mention all the product category under the provided category. mention all the categories that the product fall into. keep the response short and crisp.           
+    ### Output Format for both the current product and recommended product details separately Provide only necessary labels, remember the responses will be reflected in the UI with correct punctuation and these headers in first letter should be capital everything in new line:      
+    Product Name:
+    Brand: 
+    Price Range:
+    Ingredients: 
+    Frequency: 
+    All the above Categories:
+    <br>
+    Recommended Product Name:
+    Brand:
+    Price Range:
+    Ingredients:
+    Frequency:
+    Categories:
+"""
+    request_message=prompt
+    print(request_message,request_image)
+    generative_multimodal_model = GenerativeModel("gemini-1.5-flash-001")
+    response = generative_multimodal_model.generate_content([request_message,request_image])
+    print(response.__dict__)
+    ans=response._raw_response.candidates[0].content.parts[0].text
+    ans=ans.replace('*','')
+    ans=ans.replace('##','')
+    ans=ans.split('\n\n')
+    # print(ans)
+
+    answer=""
+    for i in (ans):
+        answer+=i.strip()
+    print('Answer:',answer)
+    match = re.search(r'Product Name:\s*(.*?):', answer)
+    match1 = re.search(r'Alternative Product Name:\s*(.*)', answer)  
+    if match1:
+        alternate_product = match1.group(1).strip()
+        print(f"Product1: {alternate_product}")
+    if match:
+        alternate_product = match.group(1).strip()
+        print(f"Product: {alternate_product}")
+    else:
+        print("No alternate product found.")
+    output_json={
+        "message": answer
+    }
+    return jsonify(output_json)
+
+
 
 if __name__ == "__main__":
-    initialize_environment()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
 
