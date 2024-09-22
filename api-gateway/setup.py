@@ -6,7 +6,11 @@ VERSION = '0.0.0'
 REQUIRED = [
     'pymongo==4.7.3',
     'Flask==3.0.3',
-    'flask-cors'
+    'flask-cors',
+    'google-generativeai',
+    'google-api-python-client==2.100.0',
+    'Pillow==9.5.0',
+    'requests==2.31.0',
 ]
 
 setup(
