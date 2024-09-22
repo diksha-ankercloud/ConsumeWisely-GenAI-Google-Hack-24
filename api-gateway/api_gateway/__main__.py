@@ -6,6 +6,17 @@ from PIL import Image
 import requests
 import os
 import re
+from flask import Flask, jsonify, request, render_template
+from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+import base64
+from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
+from langchain_core.messages import SystemMessage
+from langchain_google_genai import ChatGoogleGenerativeAI
+import vertexai
+from vertexai.generative_models import GenerativeModel, Tool, grounding
+import re
 
 app = Flask(__name__)
 CORS(app) 
