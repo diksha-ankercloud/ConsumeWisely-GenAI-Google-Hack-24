@@ -280,8 +280,8 @@ def get_product(product_id):
 
     return "Not Found"
  
-@app.route('/get_response', methods=['GET', 'POST'])
-def get_response():
+@app.route('/get-chat-response', methods=['GET', 'POST'])
+def get-chat-response():
     request_message = request.form.get('message')
     print('Message:', request_message)
     url_pattern = r'(https?://[^\s]+)'
