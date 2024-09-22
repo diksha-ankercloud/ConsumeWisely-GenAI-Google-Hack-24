@@ -280,8 +280,8 @@ def get_product(product_id):
 
     return "Not Found"
  
-@app.route('/get-chat-response', methods=['GET', 'POST'])
-def get-chat-response():
+@app.route('/chat-bot')
+def chat-bot():
     request_message = request.form.get('message')
     print('Message:', request_message)
     url_pattern = r'(https?://[^\s]+)'
@@ -357,7 +357,7 @@ I will provide an image of a product ingredients confirms where the products is 
     }
     return output_json
 
-@app.route('/get_image', methods=['GET', 'POST'])
+@app.route('/get_image')
 def get_image():
     service = build("customsearch", "v1",
             developerKey=apikey)
