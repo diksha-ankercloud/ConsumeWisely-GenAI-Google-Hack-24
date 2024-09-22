@@ -370,14 +370,15 @@ def get_ingre_search(product):
     return ingredients
 
 def get_search_info(product, ingredients):
-    prompt = f"""The product is {product} and the ingredients are {ingredients}, now do the following:
+    prompt = f"""    prompt = f"""The product is {product} and the ingredients are {ingredients}, now do the following:
     Category 1: Can you give me a brief of taste on what the {product} is and add that full info in(*** ***).
     Category 2: Also only list the nutritional (benefits/harms) if there are any.
     Category 3 (only mention relevant category): look if the product is suitable for a vegan or keto or jain or all diets and flag only the name of that diet of any or multiple suitable in (*** ***).
     Category 4 (single word answer): If the {product} is organic or supports sustainability or small businesses add that in (*** ***).
-    Category 5: Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
+    Category 5: (only mention relevant category): Mention if the {product} has any major allergens that are found in food in (*** ***).
+    Category 6: Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
     Give me the ingredients of this {product} from the internet (*** ***)
-    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None"""
+    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None""""""
     
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     model = create_genai_model()
