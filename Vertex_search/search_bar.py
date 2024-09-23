@@ -27,13 +27,13 @@ model = GenerativeModel("gemini-1.5-flash-001")
 def index():
     if request.method == 'POST':
         product = request.form['product']
-        ingredients = get_ingredients(product)
-        product_info = get_product_info(product, ingredients)
+        ingredients = get_ingre_search(product)
+        product_info = get_search_info(product, ingredients)
         print(product_info)
         return render_template('result.html', product=product, ingredients=ingredients, product_info=product_info)
     return render_template('index.html')
 
-def get_ingredients(product):
+def get_ingre_search(product):
     prompt = f"what are the ingredients or major composition of {product}"
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     response = model.generate_content(prompt, tools=[tool])
@@ -41,7 +41,7 @@ def get_ingredients(product):
     print(f"Ingredients for {product}: {ingredients}")  # Confirmation output
     return ingredients
 
-def get_product_info(product, ingredients):
+def get_search_info(product, ingredients):
     max_attempts = 3
     attempt = 0
     
