@@ -256,6 +256,120 @@ def get_product(product_id):
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] ="cred.json"
 vertexai.init(project="vision-forge-414908", location="us-central1")
+search_url = "https://www.googleapis.com/customsearch/v1"
+collection_name="Shopping-Products"
+db = firestore.Client.from_service_account_json(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
+
+def query_db(search_term):
+    products_ref = db.collection('products')
+    query = products_ref.where('product_name', '>=', search_term).where('product_name', '<=', search_term + '\uf8ff')
+    results = query.stream()
+    matched_products = []
+    for doc in results:
+        matched_products.append(doc.to_dict())
+        
+    if matched_products:
+        print(f"Products that match '{search_term}':")
+        for product in matched_products:
+            print(product) 
+    else:
+        print(f"No products found for search term '{search_term}'.")
+
+
+def store_data_in_firestore(llm_response, links):
+    # Initialize Firestore client
+    link1=links.get('image-1')
+    link2=links.get('image-2')
+    link3=links.get('image-3')
+    link4=links.get('image-4')
+    product_name = llm_response.get("product")
+    description = llm_response.get("Description")
+    product_info = llm_response.get("product_info", {})
+    allergens = product_info.get("allergens")
+    diet_suitability = product_info.get("diet_suitability")
+    ingredients = product_info.get("ingredients")
+    nutritional_benefits_harms = product_info.get("nutritional_benefits_harms")
+    organic_sustainable = product_info.get("organic_sustainable")
+    recent_news = product_info.get("recent_news")
+    taste = product_info.get("taste")
+    data_to_store = {
+    "product_name": product_name,
+    "description": description,
+    
+    "product_info": {
+        "allergens": allergens,
+        "diet_suitability": diet_suitability,
+        "ingredients": ingredients,
+        "nutritional_benefits_harms": nutritional_benefits_harms,
+        "organic_sustainable": organic_sustainable,
+        "recent_news": recent_news,
+        "taste": taste
+    },
+    "images":{
+        "image-1":link1,
+        "image-2":link2,
+        "image-3":link3,
+        "image-4":link4
+    }
+}
+    products_ref = db.collection('products')
+    query = products_ref.where("product_name", "==", product_name).limit(1)
+    results = query.stream()
+
+    # Convert query result to a list to check if the product exists
+    existing_product = list(results)
+
+    if not existing_product:
+        # If product does not exist, store the new product information
+        doc_ref = products_ref.document(product_name)  # Generates a new document ID
+        doc_ref.set(data_to_store)
+        print(f"New product '{product_name}' successfully stored in Firestore.")
+    else:
+        # If product exists, retrieve its information
+        for product in existing_product:
+            product_data = product.to_dict()
+            print(f"Product '{product_name}' already exists in Firestore. Details:")
+            print(json.dumps(product_data, indent=4))
+
+def test(ans):
+    ans=ans.replace('*','')
+    ans=ans.replace('##','')
+    ans=ans.split('\n\n')
+    # print(ans)
+    product_info = {}
+    answer=""
+    for i in (ans):
+        line =i.strip()
+        if ':' in line:
+            key, value = line.split(':', 1)
+            product_info[key.strip()] = value.strip()
+
+# Print the product information in an organized manner
+    for key, value in product_info.items():
+        products=f"{key}: {value}"
+    return products
+
+def downloadImage(searchTerm):
+    searchTerm=searchTerm
+    service = build("customsearch", "v1",
+            developerKey=apikey)
+    params = {
+        "q": searchTerm,
+        "cx": cxid,
+        "searchType": "image",
+        "num": 4,
+        "fileType": "jpg",
+        "imgType": "photo",
+        "key": apikey,
+    }
+    response = requests.get(search_url, params=params)
+    print(response)
+    results = response.json()
+
+    image_urls = [item["link"] for item in results.get("items", [])]
+    image_dict = {f"image-{i+1}": url for i, url in enumerate(image_urls)}
+    return image_dict
+
 
 def download_image(image_url, folder_path, image_name=None):
     try:
