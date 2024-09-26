@@ -11,6 +11,7 @@ from vertexai.generative_models import (
     grounding,
 )
 from flask import Flask, request, jsonify
+import re
 
 app = Flask(__name__)
 
@@ -109,28 +110,31 @@ def analyze_product_endpoint():
     return jsonify({"analysis": result})
 
 def get_ingre_search(product):
-    prompt = f"what are the ingredients or major composition of {product}"
+    prompt = f"List all the ingredients of the {product}. Separate each ingredient with a comma. Also make sure that if you can get the measurements of each ingredients in the {product}"
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     model = create_genai_model()
     response = model.generate_content(prompt, tools=[tool])
     ingredients = response.candidates[0].content.parts[0].text
-    return ingredients
+    return ingredients.strip()
 
 def get_search_info(product, ingredients):
-    prompt = f"""The product is {product} and the ingredients are {ingredients}, now do the following:
-    Category 1: Can you give me a brief of taste of the {product} the taste info should be added in (*** ***).
-    Category 2: Also only list the nutritional (benefits/harms) if there are any There benefits or harms should be added inside  (*** ***).
-    Category 3 (only mention relevant category): look if the product is suitable for a vegan or keto or jain or all diets and flag only the name of that diet of any or multiple suitable inside (*** ***).
-    Category 4 (single word answer): If the {product} is organic or supports sustainability or small businesses add that in (*** ***).
-    Category 5: (only mention relevant category): Mention if the {product} has any major allergens that are found in food in (*** ***).
-    Category 6: Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
-    Give me the ingredients of this {product} from the internet (*** ***)
-    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None"""
+    prompt = f"""
+    The name of the category should come in (# #).
+    The product is {product} and the ingredients are {ingredients}, now do the following:
+    (#Taste#): Can you give me a brief of taste of the {product} the taste info should be added in (*** ***).
+    (#Nurtitional harms/benefits#) 2: Also only list the nutritional (benefits/harms) if there are any There benefits or harms should be added inside  (*** ***).
+    (#suitable diets#): (only mention relevant category): mention if it is suitable for vegan, keto or jain consumers either one or many(*** ***).
+    (#sustainibility factor#) (single word answer): If the {product} is organic or supports sustainability or small businesses add that in (*** ***).
+    (#Allergens#): (only mention relevant category): Mention if the {product} has any major allergens that are found in food in (*** ***).
+    ("Recent news"): Also if there is any recent news regarding {product} flag it in less than 3 words in (*** ***).
+    (Ingredietns#)Give me the ingredients of this {product} from the internet (*** ***)
+    If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None
+    """
     
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     model = create_genai_model()
     response = model.generate_content(prompt, tools=[tool])
-    return str(response.candidates[0].content.parts[0].text)
+    return response.candidates[0].content.parts[0].text
 
 @app.route('/get_search_info', methods=['POST'])
 def get_search_info_endpoint():
@@ -143,12 +147,18 @@ def get_search_info_endpoint():
     ingredients = get_ingre_search(product)
     product_info = get_search_info(product, ingredients)
 
+    # Parse the product_info string into a dictionary
+    info_dict = {}
+    pattern = r'\(#(.*?)#\):\s*\(\*\*\*(.*?)\*\*\*\)'
+    matches = re.findall(pattern, product_info, re.DOTALL)
+    for key, value in matches:
+        info_dict[key.strip()] = value.strip()
+
     return jsonify({
         "product": product,
         "ingredients": ingredients,
-        "product_info": product_info
+        "product_info": info_dict
     })
-
 
 
 if __name__ == "__main__":
