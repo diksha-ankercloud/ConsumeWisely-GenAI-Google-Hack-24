@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Analysis Form</title>
 </head>
-<body>
+<body class="stop-scroll" id ="google_element">
     <h1>Product Analysis Form</h1>
     <form action="/analyze_product" method="post" enctype="multipart/form-data">
         <label for="age">Age:</label>
@@ -44,7 +44,13 @@
 
     <div id="result"></div>
 
-    <script>
+    <script src="http://translate.google.com/translate_a/element.js?cb=loadGoogleTranslate">
+
+       
+        function loadGoogleTranslate()
+        {
+            new google.translate.TranslateElement("google_element");
+        }
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
