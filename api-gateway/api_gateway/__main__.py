@@ -4,9 +4,12 @@ from googleapiclient.discovery import build
 import google.generativeai as genai
 from PIL import Image
 import requests
+import os
+import re
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
 import base64
 from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
 from langchain_core.messages import SystemMessage
@@ -14,14 +17,27 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import vertexai
 from vertexai.generative_models import GenerativeModel, Tool, grounding
 import re
-#import firebase_admin
-
+import os
+from dotenv import load_dotenv
+import base64
+from langchain_core.prompts import HumanMessagePromptTemplate, ChatPromptTemplate
+from langchain_core.messages import SystemMessage
+from langchain_google_genai import ChatGoogleGenerativeAI
+import vertexai
+import json
 from vertexai.generative_models import (
     GenerativeModel,
     Tool,
     grounding,
 )
 from flask import Flask, request, jsonify
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./cred.json"
+app = Flask(__name__)
+
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app) 
 
@@ -256,141 +272,13 @@ def get_product(product_id):
     return "Not Found"
  
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] ="cred.json"
-vertexai.init(project="vision-forge-414908", location="us-central1")
-search_url = "https://www.googleapis.com/customsearch/v1"
-collection_name="Shopping-Products"
-db = firestore.Client.from_service_account_json(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
-
-def query_db(search_term):
-    products_ref = db.collection('products')
-    query = products_ref.where('product_name', '>=', search_term).where('product_name', '<=', search_term + '\uf8ff')
-    results = query.stream()
-    matched_products = []
-    for doc in results:
-        matched_products.append(doc.to_dict())
-        
-    if matched_products:
-        print(f"Products that match '{search_term}':")
-        for product in matched_products:
-            print(product) 
-    else:
-        print(f"No products found for search term '{search_term}'.")
-
-
-def store_data_in_firestore(llm_response, links):
-    # Initialize Firestore client
-    link1=links.get('image-1')
-    link2=links.get('image-2')
-    link3=links.get('image-3')
-    link4=links.get('image-4')
-    product_name = llm_response.get("product")
-    description = llm_response.get("Description")
-    product_info = llm_response.get("product_info", {})
-    allergens = product_info.get("allergens")
-    diet_suitability = product_info.get("diet_suitability")
-    ingredients = product_info.get("ingredients")
-    nutritional_benefits_harms = product_info.get("nutritional_benefits_harms")
-    organic_sustainable = product_info.get("organic_sustainable")
-    recent_news = product_info.get("recent_news")
-    taste = product_info.get("taste")
-    data_to_store = {
-    "product_name": product_name,
-    "description": description,
+def initialize_environment():
+    """Initialize environment variables and Google Cloud settings."""
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./cred.json"
     
-    "product_info": {
-        "allergens": allergens,
-        "diet_suitability": diet_suitability,
-        "ingredients": ingredients,
-        "nutritional_benefits_harms": nutritional_benefits_harms,
-        "organic_sustainable": organic_sustainable,
-        "recent_news": recent_news,
-        "taste": taste
-    },
-    "images":{
-        "image-1":link1,
-        "image-2":link2,
-        "image-3":link3,
-        "image-4":link4
-    }
-}
-    products_ref = db.collection('products')
-    query = products_ref.where("product_name", "==", product_name).limit(1)
-    results = query.stream()
-
-    # Convert query result to a list to check if the product exists
-    existing_product = list(results)
-
-    if not existing_product:
-        # If product does not exist, store the new product information
-        doc_ref = products_ref.document(product_name)  # Generates a new document ID
-        doc_ref.set(data_to_store)
-        print(f"New product '{product_name}' successfully stored in Firestore.")
-    else:
-        # If product exists, retrieve its information
-        for product in existing_product:
-            product_data = product.to_dict()
-            print(f"Product '{product_name}' already exists in Firestore. Details:")
-            print(json.dumps(product_data, indent=4))
-
-def test(ans):
-    ans=ans.replace('*','')
-    ans=ans.replace('##','')
-    ans=ans.split('\n\n')
-    # print(ans)
-    product_info = {}
-    answer=""
-    for i in (ans):
-        line =i.strip()
-        if ':' in line:
-            key, value = line.split(':', 1)
-            product_info[key.strip()] = value.strip()
-
-# Print the product information in an organized manner
-    for key, value in product_info.items():
-        products=f"{key}: {value}"
-    return products
-
-def downloadImage(searchTerm):
-    searchTerm=searchTerm
-    service = build("customsearch", "v1",
-            developerKey=apikey)
-    params = {
-        "q": searchTerm,
-        "cx": cxid,
-        "searchType": "image",
-        "num": 4,
-        "fileType": "jpg",
-        "imgType": "photo",
-        "key": apikey,
-    }
-    response = requests.get(search_url, params=params)
-    print(response)
-    results = response.json()
-
-    image_urls = [item["link"] for item in results.get("items", [])]
-    image_dict = {f"image-{i+1}": url for i, url in enumerate(image_urls)}
-    return image_dict
-
-
-def download_image(image_url, folder_path, image_name=None):
-    try:
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        response = requests.get(image_url)
-        response.raise_for_status() 
-        if not image_name:
-            image_name = image_url.split("/")[-1]
-        image_path = os.path.join(folder_path, image_name)
-        with open(image_path, 'wb') as image_file:
-            image_file.write(response.content)
-        with open(image_path, 'rb') as image_file:
-            image_data = base64.b64encode(image_file.read()).decode("utf-8")
-        
-        print(f"Image downloaded and saved as {image_path}")
-        return image_data
-    except Exception as e:
-        print(f"Failed to download image. Error: {e}")
+    PROJECT_ID = "vision-forge-414908"
+    REGION = "us-central1"
+    vertexai.init(project=PROJECT_ID, location=REGION)
 
 def create_genai_model():
     """Create and return a GenerativeModel instance."""
@@ -399,10 +287,8 @@ def create_genai_model():
 def get_product_info(product):
     """Retrieve product information using Google Search Retrieval."""
     model_ground = create_genai_model()
-
     prompt = f"only give me the nutritional (benefits/harms) content regarding the consumption of {product}. Also if there is any recent news regarding if the {product} has some false claims. Also find if the product is from a small business or not."
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
-    
     response = model_ground.generate_content(prompt, tools=[tool])
     return response.candidates[0].content.parts[0].text
 
@@ -419,48 +305,15 @@ def create_chat_model():
 def create_chat_prompt():
     """Create and return a ChatPromptTemplate instance."""
     return ChatPromptTemplate.from_messages([
-        SystemMessage(content='''You are well experienced dietician and nutritionist. You will be given the Age, height, weight and dietary precautions and goals of the person. 
-                        You will be given a product and its ingredients select one from each category based on the ingredients and health goals of the person only add in the result each category name should be in (#category#) and only answer of each category in (** **).
-                        (Frequency of cunsumption): how frequently can i consume it based on my weight goals:
-                        1. daily consumption
-                        2. weekly consumption
-                        3. monthly consumption
-                        (habit of eating): and as per my diet is this food :
-                        1. nutritional
-                        2. recreations
-                        3.  or regular consumption for me
-
-                        (sustainibility parameters): If the food product follows any of the following:
-                        1. Organic
-                        2. Sustainable: 
-                        3. Supports Small Businesses
-                        4. Animal Cruelty-Free: 
-                        5. Lower carbon footprint
-
-                        (allergy alert): flag alergens if they are related to my allergy otherwise don't flag a warning
-                        (diet type): you need to also flag diet type match this with the input of user info and flag if it is suitable for their dietary type or restrictions(eg vegan/jain/vegetarian/keto) based on user input also flag why not suitable should be a part of the answe in (** **).
-                        (nutrient alert): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories)
-                        (carbon footprint info): give info about carbon footprint of the product and also give info about the parent company of the product.
-                        Your final answer should only contain tags among one option of each category based on product nutrition analysis.
-                        If the answer is None just drop that category output.
-                        -Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product.
-                        Your next input will be the info of the person, the name of the product, and screenshot of the ingredients
-                        Make sure you are thorough about all the different tags before printing, all the tags category should be printed, and only the tags
-                        
-            '''),
+        SystemMessage(content='''You are a well-experienced dietician and nutritionist. You will be given the age, height, weight, and dietary precautions and goals of the person.
+                        You will be given a product and its ingredients to analyze. The goal is to categorize how often the product can be consumed, whether it fits the user's diet, and if it follows sustainability practices. 
+                        Respond based on health analysis using appropriate tags.'''),
         HumanMessagePromptTemplate.from_template(
-            template='''The person's info is as follows:
-                Person info: I am a {gender} who is {age} years old, my weight is {weight}, my height is {height}, I am {diet_type} and I want to {health_goal}. Allergic to {allergen}.
-                Product info: {product_info_str}
-                'image_url': "data:image/jpeg;base64,{image_data}
-                
-                "'''
+            template='''The person's info is:
+                Age: {age}, Gender: {gender}, Weight: {weight}, Height: {height}, Dietary Type: {diet_type}, Health Goal: {health_goal}, Allergens: {allergen}.
+                Product info: {product_info_str}, Image: {image_data}'''
         ),
     ])
-
-def process_image(image_file):
-    """Process the uploaded image file and return base64 encoded data."""
-    return base64.b64encode(image_file.read()).decode("utf-8")
 
 def analyze_product(user_info, product_info, image_data):
     """Analyze the product based on user info and product details."""
@@ -481,7 +334,6 @@ def analyze_product(user_info, product_info, image_data):
     })
 
     return response.content
-
 
 @app.route('/analyze_product', methods=['POST'])
 def analyze_product_endpoint():
@@ -509,15 +361,7 @@ def analyze_product_endpoint():
     product_info = get_product_info(product_name)
     result = analyze_product(user_info, product_info, image_data_base64)
 
-    # Process the result using regex to create the desired JSON format
-    processed_result = {}
-    pattern = r'#\s*(.*?)\s*#:\s*\*\*(.*?)\*\*'
-    matches = re.findall(pattern, result)
-    
-    for key, value in matches:
-        processed_result[key.strip()] = value.strip()
-
-    return jsonify({"analysis": processed_result})
+    return jsonify({"analysis": result})
 
 def get_ingre_search(product):
 
@@ -533,8 +377,10 @@ def get_ingre_search(product):
 
     return ingredients.strip()
 
+
 def get_search_info(product, ingredients):
     cleaned_product = re.sub(r'\bbuy\b', '', product, flags=re.IGNORECASE).strip()
+   
 
     prompt = f"""
 
@@ -544,22 +390,21 @@ def get_search_info(product, ingredients):
 
     (#taste#): Can you give me a brief of taste of the {cleaned_product} the taste info should be added in (*** ***).
 
-    (#nurtitional_harms/benefits#) 2: Also only list the nutritional (benefits/harms) if there are any There benefits or harms should be added inside  (*** ***).
+    (#nurtitional harms/benefits#) 2: Also only list the nutritional (benefits/harms) if there are any There benefits or harms should be added inside  (*** ***).
 
-    (#suitable_diets#): (only mention relevant category): mention if it is suitable for vegan, keto or jain consumers either one or many(*** ***).
+    (#suitable diets#): (only mention relevant category): mention if it is suitable for vegan, keto or jain consumers either one or many(*** ***).
 
     (#sustainibility factor#) (single word answer): If the {cleaned_product} is organic or supports sustainability or small businesses add that in (*** ***).
 
     (#allergens#): (only mention relevant category): Mention if the {cleaned_product} has any major allergens that are found in food in (*** ***).
 
-    ("recent_news"): Also if there is any recent news regarding {cleaned_product} flag it in less than 3 words in (*** ***).
+    ("recent news"): Also if there is any recent news regarding {cleaned_product} flag it in less than 3 words in (*** ***).
 
     (ingredietns#)Give me the ingredients of this {cleaned_product} from the internet (*** ***)
 
     If you are not able to fill in these categories based on ingredients so look into the product name and then fill in the categories u have to fill them mandatorily understanding and print all categories. even if some categories u find no info print them as None
 
     """
-
     
 
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
@@ -571,137 +416,31 @@ def get_search_info(product, ingredients):
     return response.candidates[0].content.parts[0].text
 
 
-
 @app.route('/get_search_info', methods=['POST'])
-
 def get_search_info_endpoint():
-
     data = request.get_json()
-
     
-
     if not data or 'product' not in data:
-
         return jsonify({"error": "No product specified"}), 400
 
-
-
     product = data['product']
-
     ingredients = get_ingre_search(product)
-
     product_info = get_search_info(product, ingredients)
 
-
-
     # Parse the product_info string into a dictionary
-
     info_dict = {}
-
     pattern = r'\(#(.*?)#\):\s*\(\*\*\*(.*?)\*\*\*\)'
-
     matches = re.findall(pattern, product_info, re.DOTALL)
-
     for key, value in matches:
-
         info_dict[key.strip()] = value.strip()
 
-
-
     return jsonify({
-
         "product": product,
-
         "ingredients": ingredients,
-
         "product_info": info_dict
-
     })
 
 
-@app.route('/chat_bot', methods=['POST'])
-def chat_bot():
-    print('Hi there you are inside the function',request)
-    request_message = request.form.get('message')
-    print('Message:', request_message)
-    url_pattern = r'(https?://[^\s]+)'
-    url_match = re.search(url_pattern, request_message)
-    print('URL:',url_match)
-    if url_match:
-        image_url = url_match.group(0)
-        print(f"Found URL: {image_url}")
-        request_image=download_image(image_url,folder_path='images')
-    else:   
-        request_image = request.files.get('image')
-        print('Image:', request_image)
-    
-    prompt="""
-    You are a conversational bot users might provide you a image or just product name get the details of product that you might need per processing and providing a solution.
-you might be provided an image or ulr of a product ingredients confirms where the products is safe to consume for humans including kids, pregnant women, old people, diabetes, heart patient ,etc...
-    Consumption : how frequently can i consume:
-    1. daily
-    2. weekly
-    3. monthly
-    Category :
-    1. nutritional
-    2. recreations
-    3.  or regular consumption.
-
-    Allergies: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any claims verify if it is true provide the resource for this details. if any ingredients can affect or trigger the allergy then provide a caution information.
-                                                            
-    Diet Type:  Provide who all can consume based on their diet type like: vegan, keto, gluten-Free.
-
-    ### Provide the information in terms of a label like it contains gluten ,excess sugar bad for diabetics.. remove all the filler words the output should be concise and exact not like a paragraph.                                                 
-    ### Provide the right details and information if the product is not safe to consume and affects the health.
-    ### Highlight and Recommend a product separately on the next line under organic and healthy products with a complete name and brand name of that single product which falls with in the budget. maintain the diet type, also provide the alternative product price as a category note all the above categories it should be mostly nutritional, sustainable, contains no allergy.
-    ### Recommend a product which should also fall in the same product type but a healthier and safer choich if its biscuit then recommend biscuit, if its chips then recommend chips ,etc. like a if i upload a cream biscuit the alternative recommended product should also be a cream biscuit but a healthier one.    ### Provide what category does this product fall into remember to mention all the product category under the provided category. mention all the categories that the product fall into. keep the response short and crisp.           
-    ### Output Format for both the current product and recommended product details separately Provide only necessary labels, remember the responses will be reflected in the UI with correct punctuation and these headers in first letter should be capital everything in new line:      
-    Product Name:
-    Brand: 
-    Price Range:
-    Ingredients: 
-    Frequency: 
-    All the above Categories:
-    <br>
-    Recommended Product Name:
-    Brand:
-    Price Range:
-    Ingredients:
-    Frequency:
-    Categories:
-"""
-    request_message=prompt
-    print(request_message,request_image)
-    generative_multimodal_model = GenerativeModel("gemini-1.5-flash-001")
-    response = generative_multimodal_model.generate_content([request_message,request_image])
-    print(response.__dict__)
-    ans=response._raw_response.candidates[0].content.parts[0].text
-    ans=ans.replace('*','')
-    ans=ans.replace('##','')
-    ans=ans.split('\n\n')
-    # print(ans)
-
-    answer=""
-    for i in (ans):
-        answer+=i.strip()
-    print('Answer:',answer)
-    match = re.search(r'Product Name:\s*(.*?):', answer)
-    match1 = re.search(r'Alternative Product Name:\s*(.*)', answer)  
-    if match1:
-        alternate_product = match1.group(1).strip()
-        print(f"Product1: {alternate_product}")
-    if match:
-        alternate_product = match.group(1).strip()
-        print(f"Product: {alternate_product}")
-    else:
-        print("No alternate product found.")
-    output_json={
-        "message": answer
-    }
-    return jsonify(output_json)
-
-
-
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080, debug=True)
-
+    initialize_environment()
+    app.run(host='0.0.0.0', port=5000, debug=True)
