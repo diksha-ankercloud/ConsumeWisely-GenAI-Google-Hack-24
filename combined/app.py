@@ -11,7 +11,8 @@ from flask_cors import CORS
 #keys required to run application
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r"C:\Users\DELL\Downloads\13-Google-GenAI-Hack-24\GenAI-Google--Hack-24\vision-forge-414908-d792f2fc2ff6.json"
 vertexai.init(project="vision-forge-414908", location="us-central1")
-
+os.environ["cxid"] = os.getenv("cxid")
+os.environ["apikey"] = os.getenv("apikey")
 search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
@@ -168,7 +169,7 @@ def get_search_info(request_data):
     
     links=request_data.get('links')
         
-    # This gemini flash modle expects the image bytes and the ingredients of the product for categorizing the product.
+    # this is the model prompt for search it takes in ingredients and then it also takes in prodcut name
     prompt= f'''
     Do the following for the given {product} using the info from {request_message}:
     The Description should be about the product a brief explanation what this product is.
@@ -182,6 +183,7 @@ def get_search_info(request_data):
     If the product contains any organic sustainable such as Organic farming and eating organic food are sustainable because they help to protect the environment and promote healthier use of natural resource provide that too.                                              
     ### Provide the right details and information if the product is not safe to consume and affects the health.
     '''
+    #this is the output format from the llm for websearch each of these key values should be displayed in frontend
     output_format = '''
         OUTPUT FORMAT:
         {
