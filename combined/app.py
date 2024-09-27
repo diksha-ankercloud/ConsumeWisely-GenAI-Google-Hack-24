@@ -130,7 +130,7 @@ def get_ingre_search(product):
     ingredients = response.candidates[0].content.parts[0].text
     return ingredients
 
-# This function uses the custom search api for image retrival
+# This function uses the custom search api for image retrival from the internet
 def downloadImage(searchTerm):
     searchTerm=searchTerm
     service = build("customsearch", "v1",
@@ -288,6 +288,8 @@ def store_data_in_firestore(llm_response, links,product):
             product_data = product.to_dict()
             print(f"Product '{product_name}' already exists in Firestore. Details:")
             print(json.dumps(product_data, indent=4))
+
+######personalisation code for after single product page loaded
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0",port=8088,debug=True)
