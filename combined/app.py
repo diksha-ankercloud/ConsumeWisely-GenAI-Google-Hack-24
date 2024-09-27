@@ -1,3 +1,4 @@
+#all the necessary imports
 from flask import render_template, redirect, request, url_for, flash, Flask, session
 from flask import jsonify
 import vertexai,requests,re,os
@@ -6,14 +7,20 @@ from google.cloud import firestore
 from vertexai.generative_models import GenerativeModel, Tool, grounding
 from googleapiclient.discovery import build
 from flask_cors import CORS
+
+#keys required to run application
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r""
 vertexai.init(project="vision-forge-414908", location="us-central1")
 cxid = ""
 apikey = ""
+search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
+
 app = Flask(__name__)
 CORS(app)
-search_url = "https://www.googleapis.com/customsearch/v1"
+
+
+#database funtions 
 collection_name="Shopping-Products"
 db = firestore.Client.from_service_account_json(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
@@ -37,7 +44,9 @@ def list_products():
             
     if products:
         print('All products from DB::')
-        return jsonify(products)   
+        return jsonify(products)   #return 1 image url and name for each product
+
+#this one is when the customer seraches for a name and all the products that match the prodcut name appear
 @app.route('/list_search_products',methods=['POST'])
 def list_search_products():
     product_name=request.form.get('product')
@@ -62,9 +71,9 @@ def list_search_products():
             
     if products:
         print('All products from DB::')
-        return jsonify(products)
+        return jsonify(products)     #returns 1 image url and product name for each product
 
-# This is the first function to check if the product exists in the db or not if it exists it retrives the product if not it goes to the else block and from the model and vertex-ai, custom search it brings the data for storing it in db.
+# This is the first function to check if the product exists in the db  if not it goes to the else block and from the model and vertex-ai, custom search it brings the data for storing it in db.
 @app.route('/check_product',methods=['POST'])
 def check_product():
 
@@ -173,7 +182,7 @@ def chat_bot(request_data):
     # This gemini flash modle expects the image bytes and the ingredients of the product for categorizing the product.
     prompt="""
 
-    I will provide you a product name, ingrediants and the images of the product analyze everything carefully and segrigate the product in the following categories,
+    -I will provide you a product name, ingrediants and the images of the product analyze everything carefully and segrigate the product in the following categories,
     Consumption : how frequently can i consume:
     1. daily
     2. weekly
