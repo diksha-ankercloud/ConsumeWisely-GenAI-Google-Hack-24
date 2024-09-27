@@ -326,9 +326,7 @@ def store_data_in_firestore(llm_response, links,product):
 
 
 
-
 #####################personalisation code for after single product page loaded######################################
-
 def create_genai_model():
     """Create and return a GenerativeModel instance."""
     return GenerativeModel("gemini-1.5-flash-001")
@@ -355,16 +353,15 @@ def create_chat_prompt():
     """Create and return a ChatPromptTemplate instance."""
     return ChatPromptTemplate.from_messages([
         SystemMessage(content='''You are well experienced dietician and nutritionist. You will be given the Age, height, weight and dietary precautions and goals of the person. 
-                        You will be given a product and its ingredients select one from each category based on the ingredients and health goals of the person only add in the result each category name should be in (#category#) and only answer of each category in (** **).Mantain the order of categgories in the output.
+                        You will be given a product and its ingredients select one from each category based on the ingredients and health goals of the person only add in the result each category name should be in (#category#) and only answer of each category in (** **).
                         (Frequency of cunsumption): how frequently can i consume it based on my weight goals:
                         1. daily consumption
                         2. weekly consumption
                         3. monthly consumption
-                      
                         (habit of eating): and as per my diet is this food :
                         1. nutritional
                         2. recreational
-                        3.  or regular consumption 
+                        3.  or regular consumption for me
 
                         (sustainibility parameters): If the food product follows any of the following:
                         1. Organic
@@ -394,9 +391,7 @@ def create_chat_prompt():
         ),
     ])
 
-def process_image(image_file):
-    """Process the uploaded image file and return base64 encoded data."""
-    return base64.b64encode(image_file.read()).decode("utf-8")
+
 
 def analyze_product(user_info, product_info, image_data):
     """Analyze the product based on user info and product details."""
@@ -454,17 +449,6 @@ def analyze_product_endpoint():
         processed_result[key.strip()] = value.strip()
 
     return jsonify({"analysis": processed_result})
-
-
-#########################################################################################################
-
-
-
-
-
-
-
-
 
 
 
