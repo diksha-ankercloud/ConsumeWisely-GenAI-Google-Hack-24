@@ -7,12 +7,16 @@ from google.cloud import firestore
 from vertexai.generative_models import GenerativeModel, Tool, grounding
 from googleapiclient.discovery import build
 from flask_cors import CORS
+from dotenv import load_dotenv
+load_dotenv()
 
 #keys required to run application
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r"C:\Users\DELL\Downloads\13-Google-GenAI-Hack-24\GenAI-Google--Hack-24\vision-forge-414908-d792f2fc2ff6.json"
 vertexai.init(project="vision-forge-414908", location="us-central1")
 os.environ["cxid"] = os.getenv("cxid")
+cxid = os.environ['cxid']
 os.environ["apikey"] = os.getenv("apikey")
+apikey = os.environ['apikey']
 search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
