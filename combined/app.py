@@ -449,7 +449,7 @@ def analyze_product_endpoint():
         processed_result[key.strip()] = value.strip()
 
     return jsonify({"analysis": processed_result})
-
+######################################################################################################
 
 
 
