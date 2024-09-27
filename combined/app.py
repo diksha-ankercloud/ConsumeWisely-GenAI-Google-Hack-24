@@ -28,6 +28,8 @@ CORS(app)
 collection_name="Shopping-Products"
 db = firestore.Client.from_service_account_json(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
+####################################listing all prodcut fror front page####################################
+
 # This function lists all the products from the db in the ui. it will retrive only the first image url and the product name from the db.
 @app.route('/list_products',methods=['POST'])
 def list_products():
@@ -49,6 +51,12 @@ def list_products():
     if products:
         print('All products from DB::')
         return jsonify(products)   #return 1 image url and name for each product
+    
+#########################################################################################################
+
+
+
+#############################lisitng search products with similar names from db##########################
 
 #this one is when the customer seraches for a name and all the products that match the prodcut name appear
 @app.route('/list_search_products',methods=['POST'])
@@ -76,6 +84,14 @@ def list_search_products():
     if products:
         print('All products from DB::')
         return jsonify(products)     #returns 1 image url and product name for each product
+    
+    
+##########################################################################################################
+
+
+########check if complete product is there in db otherwise the complete search output from web###########
+
+
 
 # This is the first function to check if the product exists in the db  if not it goes to the else block and from the model and vertex-ai, custom search it brings the data for storing it in db.
 @app.route('/check_product_and_web_search',methods=['POST'])
@@ -230,7 +246,11 @@ def get_search_info(request_data):
     }
     return output_json
 
-# this function will finally store the data from the chat-bot function.
+##############################################################################################################
+
+
+
+# this function will finally store the new data from web search to the db function.
 def store_data_in_firestore(llm_response, links,product):
 
     print('Inside the DB;;;;',llm_response)
@@ -289,7 +309,25 @@ def store_data_in_firestore(llm_response, links,product):
             print(f"Product '{product_name}' already exists in Firestore. Details:")
             print(json.dumps(product_data, indent=4))
 
-######personalisation code for after single product page loaded
+#####################personalisation code for after single product page loaded######################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0",port=8088,debug=True)
