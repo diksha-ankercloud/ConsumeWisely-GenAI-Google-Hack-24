@@ -11,8 +11,7 @@ from flask_cors import CORS
 #keys required to run application
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r"C:\Users\DELL\Downloads\13-Google-GenAI-Hack-24\GenAI-Google--Hack-24\vision-forge-414908-d792f2fc2ff6.json"
 vertexai.init(project="vision-forge-414908", location="us-central1")
-cxid = "20551f7fc808b4671"
-apikey = "AIzaSyA9zpnFCZ51r7rnGz7vxNQbjcj8AzIV4m0"
+
 search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
@@ -28,7 +27,7 @@ db = firestore.Client.from_service_account_json(os.environ['GOOGLE_APPLICATION_C
 @app.route('/list_products',methods=['POST'])
 def list_products():
     products_ref = db.collection('products')
-
+    
     products = []
 
     # Stream all documents in the products collection
@@ -74,8 +73,8 @@ def list_search_products():
         return jsonify(products)     #returns 1 image url and product name for each product
 
 # This is the first function to check if the product exists in the db  if not it goes to the else block and from the model and vertex-ai, custom search it brings the data for storing it in db.
-@app.route('/check_product',methods=['POST'])
-def check_product():
+@app.route('/check_product_and_web_search',methods=['POST'])
+def check_product_and_web_search():
 
     product_name=request.form.get('product')
     print('Product name',product_name)
@@ -201,7 +200,7 @@ def get_search_info(request_data):
      ###Note: If you are not able to retrieve information for any of the above categores just pass the value as None
     
 '''
-    prompt = prompt +output_format
+    prompt = prompt + output_format
     generative_multimodal_model = GenerativeModel("gemini-1.5-flash-001")
     response = generative_multimodal_model.generate_content([prompt])
     ans=response._raw_response.candidates[0].content.parts[0].text
