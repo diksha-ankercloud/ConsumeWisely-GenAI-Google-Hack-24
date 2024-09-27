@@ -9,10 +9,10 @@ from googleapiclient.discovery import build
 from flask_cors import CORS
 
 #keys required to run application
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r""
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r"C:\Users\DELL\Downloads\13-Google-GenAI-Hack-24\GenAI-Google--Hack-24\vision-forge-414908-d792f2fc2ff6.json"
 vertexai.init(project="vision-forge-414908", location="us-central1")
-cxid = ""
-apikey = ""
+cxid = "20551f7fc808b4671"
+apikey = "AIzaSyA9zpnFCZ51r7rnGz7vxNQbjcj8AzIV4m0"
 search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
@@ -98,25 +98,24 @@ def check_product():
     
     else:
         print('Product not found in the db so searching the other apis.........')
-        final=get_search_info(product_name)
+        final=get_combined_ingre_img(product_name)
         return final
     
 # This is the second function that it calls if the product name was not found in the firestore db. it gets the produt name and first pass it to the vertex ai search api then gets the image link and bytes code form the downloadimage function and finally pass it to the chat-bot to categorize the product.
-def get_search_info(product_name):
+def get_combined_ingre_img(product_name):
     print('Inside',product_name)
     product=product_name
     ingredients = get_ingre_search(product)
-    # product_info = get_search_info(product, ingredients)
+    # product_info = get_combined_ingre_img(product, ingredients)
     data=downloadImage(product)
     links=data.get('links')
-    data1=data.get('image_data')
+    
     request_data={
         "product": product,
         "ingredients": ingredients,
-        "image":data1,
         "links":links
     }
-    res=chat_bot(request_data)
+    res=get_search_info(request_data)
     return jsonify(res)
 
 def get_ingre_search(product):
@@ -153,85 +152,72 @@ def downloadImage(searchTerm):
         os.makedirs(folder_path)
     image_name='sample-testing-image-1'
     # This part extracts the image urls and retrive only the first image and convert them to base64 bytes.
-    if image_url:
-        first_image_url = image_url[0]
-        image_name = first_image_url.split('/')[-1]  
-        image_path = os.path.join(folder_path, image_name)
-        img_response = requests.get(first_image_url)
-        with open(image_path, 'wb') as image_file:
-            image_file.write(img_response.content)
-        with open(image_path, 'rb') as image_file:
-            image_data = base64.b64encode(image_file.read()).decode("utf-8")
+
         
     res={
-        'links':image_dict,
-       'image_data':image_data
+        'links':image_dict
     }
     return res
 
 #This function categorize the product into different categories and finally store it in db.
-def chat_bot(request_data):
+def get_search_info(request_data):
     print('Hi there you are inside the function',request_data)
     if request_data.get('product'):
         product=request_data.get('product')
         request_message = request_data.get('ingredients')
         
-    if request_data.get('image'):
-        links=request_data.get('links')
-        request_image = request_data.get('image')
+    
+    links=request_data.get('links')
+        
     # This gemini flash modle expects the image bytes and the ingredients of the product for categorizing the product.
-    prompt="""
-
-    -I will provide you a product name, ingrediants and the images of the product analyze everything carefully and segrigate the product in the following categories,
-    Consumption : how frequently can i consume:
-    1. daily
-    2. weekly
-    3. monthly
-    Category :
-    1. nutritional
-    2. recreations
-    3.  or regular consumption.
-
-    Allergies: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any claims verify if it is true provide the resource for this details. if any ingredients can affect or trigger the allergy then provide a caution information.
-                                                            
-    Diet Type:  Provide who all can consume based on their diet type like: vegan, keto, gluten-Free.
-    The description should be about the product a brief explanatio what this product is.
-    If the product contains any organic sustainable such as Organic farming and eating organic food are sustainable because they help to protect the environment and promote healthier use of natural resource provide that too.
-    ### Provide the information in terms of a label like it contains gluten ,excess sugar bad for diabetics.. remove all the filler words the output should be concise and exact not like a paragraph.                                                 
+    prompt= f'''
+    Do the following for the given {product} using the info from {request_message}:
+    The Description should be about the product a brief explanation what this product is.
+    Allergens: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any.                                                      
+    Diet Suitability: mention if it is suitable for vegan, keto, jain  or gluten-free, diabetic diets, high cholestrol patients etc consumers either one or many options.
+    Ingredients: list all the {request_message} contents of the product with measurements.
+    Nutritional Benefits/Harms: mention if the product has any nutritional benefits or harms for the health of the consumer based on {request_message}.
+    Sustainibility factor: mention if the {product} is organic or supports sustainability or small businesses or is animal cruelty free.
+    Recent-news: mention there is any recent news regarding {product} flag it in one or 2 sentences.
+    Taste: Give a brief on the taste and flavor profiles of the product {product}
+    If the product contains any organic sustainable such as Organic farming and eating organic food are sustainable because they help to protect the environment and promote healthier use of natural resource provide that too.                                              
     ### Provide the right details and information if the product is not safe to consume and affects the health.
+    '''
+    output_format = '''
         OUTPUT FORMAT:
         {
         "Description": "",
-        "product": "",
+        "product": "" ,
         "product_info": {
             "allergens": "",
             "diet_suitability": "",
             "ingredients": "",
             "nutritional_benefits_harms": "",
-            "organic_sustainable": "",
+            "sustainibility_factor": "",
             "recent_news": "",
             "taste": ""
         }
     }
-        </output>
-    ###Note if the product does not fall into any of the mentioned categories then provide that category name as key and value as none.
-"""
-    prompt=request_message+' '+prompt
+     ###Note: If you are not able to retrieve information for any of the above categores just pass the value as None
+    
+'''
+    prompt = prompt +output_format
     generative_multimodal_model = GenerativeModel("gemini-1.5-flash-001")
-    response = generative_multimodal_model.generate_content([prompt,request_image])
+    response = generative_multimodal_model.generate_content([prompt])
     ans=response._raw_response.candidates[0].content.parts[0].text
     # After getting the final response from llm we need to removed un wanted parameters to structure the code. since it is an llm response in json format it would give the output in string only so to convert to json remove the '''json at the beggining and ''' at the end
     if ans.startswith(r'```json'):
         json_string = re.search(r'```json(.*?)```', ans, re.DOTALL)
         if json_string:
             llm_response = json_string.group(1).strip() 
+            
             print('Json string::',llm_response)
     product_name = re.search(r'"product":\s*"(.*?)"', llm_response)
     # After retriving the final data store it in the firestore db
     if product_name:
         product_name=f"{product_name.group(1)}"
         json_data = json.loads(llm_response)
-        data_base=store_data_in_firestore(json_data, links)
+        data_base=store_data_in_firestore(json_data, links,product)
         print('Data Stored or already exists:::',data_base)
     output_json={
         "message": json_data,
@@ -240,7 +226,8 @@ def chat_bot(request_data):
     return output_json
 
 # this function will finally store the data from the chat-bot function.
-def store_data_in_firestore(llm_response, links):
+def store_data_in_firestore(llm_response, links,product):
+
     print('Inside the DB;;;;',llm_response)
     print('Type of the data',type(llm_response))
     # First get all the data for storing like links,product,ingredients etc..
@@ -248,14 +235,14 @@ def store_data_in_firestore(llm_response, links):
     link2 = links.get('image-2', None)
     link3 = links.get('image-3', None)
     link4 = links.get('image-4', None)
-    product_name = llm_response.get("product")
+    product_name = product
     description = llm_response.get("Description")
     product_info = llm_response.get("product_info", {})
     allergens = product_info.get("allergens")
     diet_suitability = product_info.get("diet_suitability",None)
     ingredients = product_info.get("ingredients",None)
     nutritional_benefits_harms = product_info.get("nutritional_benefits_harms",None)
-    organic_sustainable = product_info.get("organic_sustainable",None)
+    sustainibility_factor = product_info.get("sustainibility_factor",None)
     recent_news = product_info.get("recent_news",None)
     taste = product_info.get("taste",None)
     # create a schema before storing in db
@@ -268,7 +255,7 @@ def store_data_in_firestore(llm_response, links):
         "diet_suitability": diet_suitability,
         "ingredients": ingredients,
         "nutritional_benefits_harms": nutritional_benefits_harms,
-        "organic_sustainable": organic_sustainable,
+        "sustainibility_factor": sustainibility_factor,
         "recent_news": recent_news,
         "taste": taste
     },
