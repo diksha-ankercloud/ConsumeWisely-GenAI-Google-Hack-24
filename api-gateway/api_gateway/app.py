@@ -602,7 +602,7 @@ def create_chat_prompt():
                         2. recreations
                         3.  or regular consumption for me
 
-                        (sustainibility parameters): If the food product follows any of the following:
+                        (sustainibility parameters): If the food product follows any of the following mention none if none applied:
                         1. Organic
                         2. Sustainable: 
                         3. Supports Small Businesses
