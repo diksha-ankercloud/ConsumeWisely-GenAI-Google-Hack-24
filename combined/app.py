@@ -599,10 +599,10 @@ def create_chat_prompt():
                         3. monthly consumption
                         (#habit of eating#): and as per my diet is this food :
                         1. nutritional
-                        2. recreations
+                        2. recreational
                         3.  or regular consumption for me
 
-                        (sustainibility parameters): If the food product follows any of the following:
+                        (#sustainibility parameters#): Imention if the product has the following characteristics:
                         1. Organic
                         2. Sustainable: 
                         3. Supports Small Businesses
@@ -611,11 +611,12 @@ def create_chat_prompt():
 
                         (#allergy alert#): flag alergens if they are related to my allergy otherwise don't flag a warning
                         (#diet type#): you need to also flag diet type match this with the input of user info and flag if it is suitable for their dietary type or restrictions(eg vegan/jain/vegetarian/keto) based on user input , answer should be in (** **) mentioning which diet it is suitable or not suitable for.
-                        (#nutrient alert#): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories)
+                        (#nutrient alert#): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories take into consideration all micro and macro nutrients)
                         (#carbon footprint info#): give info about carbon footprint of the product and also give info about the parent company of the product.
-                        Your final answer should only contain tags among one option of each category based on product nutrition analysis.
+                        (#recomendation#):Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product if 3 or 2 out of 6 categories match say mid recommendation otherwise any lessser say none in  (** **)  
+                      Your final answer should only contain tags among one option of each category based on product nutrition analysis.
                         If the answer is None just drop that category output.
-                        -Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product.
+                        
                         Your next input will be the info of the person, the name of the product, and screenshot of the ingredients
                         Make sure you are thorough about all the different tags before printing, all the tags category should be printed, and only the tags
                         
