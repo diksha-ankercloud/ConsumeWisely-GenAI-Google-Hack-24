@@ -21,7 +21,8 @@ from vertexai.generative_models import (
 ########################### hard coded products from stagnant code #####################################
 
 
-
+app = Flask(__name__)
+CORS(app)
 products = [
   {
     "id" : "1",
@@ -238,10 +239,10 @@ products = [
 def home():
     return "Hello, this is a basic Flask server running on port 4000!"
 
-# Products route
-@app.route('/products', methods=['GET'])
-def list_products():
-    return jsonify(products)
+# # Products route
+# @app.route('/products', methods=['GET'])
+# def list_products():
+#     return jsonify(products)
 
 @app.route('/product/<product_id>', methods=['GET'])
 def get_product(product_id):
@@ -271,8 +272,7 @@ apikey = os.environ['apikey']
 search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
 
-app = Flask(__name__)
-CORS(app)
+
 
 #database funtions 
 collection_name="Shopping-Products"
@@ -686,12 +686,6 @@ def analyze_product_endpoint():
 
     return jsonify({"analysis": processed_result})
 ######################################################################################################
-
-
-
-
-
-
 
 
 
