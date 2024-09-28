@@ -570,7 +570,7 @@ def create_genai_model():
 def get_product_info(product):
     """Retrieve product information using Google Search Retrieval."""
     model_ground = create_genai_model()
-    prompt = f"only give me the nutritional (benefits/harms) content regarding the consumption of {product}. Also give information regarding the parent company and its carbon footprint of available of the{product} . Also find if the product is from a small business or not."
+    prompt = f"Give me the ingredients and composition of this {product}. Give me the nutritional (benefits/harms) content regarding the consumption of {product}. Also give information regarding the parent company and its carbon footprint of available of the{product} . Also find if the product is from a small business or not."
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     response = model_ground.generate_content(prompt, tools=[tool])
     return response.candidates[0].content.parts[0].text
@@ -588,15 +588,18 @@ def create_chat_model():
 def create_chat_prompt():
     """Create and return a ChatPromptTemplate instance."""
     return ChatPromptTemplate.from_messages([
-        SystemMessage(content='''You are well experienced dietician and nutritionist. You will be given the Age, height, weight and dietary precautions and goals of the person. 
+        SystemMessage(content='''
+                        You are well experienced dietician and nutritionist. You will be given the Age, height, weight and dietary precautions and goals of the person. 
                         You will be given a product and its ingredients select one from each category based on the ingredients and health goals of the person only add in the result each category name should be in (#category#) and only answer of each category in (** **).
-                        (Frequency of cunsumption): how frequently can i consume it based on my weight goals:
+                        Output should lool like:
+                        RESULTS:
+                        (#Frequency of cunsumption#): how frequently can i consume it based on my weight goals:
                         1. daily consumption
                         2. weekly consumption
                         3. monthly consumption
-                        (habit of eating): and as per my diet is this food :
+                        (#habit of eating#): and as per my diet is this food :
                         1. nutritional
-                        2. recreational
+                        2. recreations
                         3.  or regular consumption for me
 
                         (sustainibility parameters): If the food product follows any of the following:
@@ -606,10 +609,10 @@ def create_chat_prompt():
                         4. Animal Cruelty-Free: 
                         5. Lower carbon footprint
 
-                        (allergy alert): flag alergens if they are related to my allergy otherwise don't flag a warning
-                        (diet type): you need to also flag diet type match this with the input of user info and flag if it is suitable for their dietary type or restrictions(eg vegan/jain/vegetarian/keto) based on user input also flag why not suitable should be a part of the answe in (** **).
-                        (nutrient alert): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories)
-                        (carbon footprint info): give info about carbon footprint of the product and also give info about the parent company of the product.
+                        (#allergy alert#): flag alergens if they are related to my allergy otherwise don't flag a warning
+                        (#diet type#): you need to also flag diet type match this with the input of user info and flag if it is suitable for their dietary type or restrictions(eg vegan/jain/vegetarian/keto) based on user input , answer should be in (** **) mentioning which diet it is suitable or not suitable for.
+                        (#nutrient alert#): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories)
+                        (#carbon footprint info#): give info about carbon footprint of the product and also give info about the parent company of the product.
                         Your final answer should only contain tags among one option of each category based on product nutrition analysis.
                         If the answer is None just drop that category output.
                         -Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product.
@@ -621,7 +624,7 @@ def create_chat_prompt():
             template='''The person's info is as follows:
                 Person info: I am a {gender} who is {age} years old, my weight is {weight}, my height is {height}, I am {diet_type} and I want to {health_goal}. Allergic to {allergen}.
                 Product info: {product_info_str}
-                'image_url': "data:image/jpeg;base64,{image_data}
+                
                 
                 "'''
         ),
@@ -629,14 +632,14 @@ def create_chat_prompt():
 
 
 
-def analyze_product(user_info, product_info, image_data):
+def analyze_product(user_info, product_info):
     """Analyze the product based on user info and product details."""
     chat_model = create_chat_model()
     chat_prompt = create_chat_prompt()
     chain = chat_prompt | chat_model
 
     response = chain.invoke({
-        "image_data": image_data,
+        
         "age": user_info["age"],
         "weight": user_info["weight"],
         "gender": user_info["gender"],
@@ -668,23 +671,37 @@ def analyze_product_endpoint():
     }
     
     product_name = data.get('product_name')
-    image_data_base64 = data.get('image_data')
+    
 
-    if not product_name or not image_data_base64:
-        return jsonify({"error": "Missing required parameters: product_name or image_data"}), 400
+    
 
     product_info = get_product_info(product_name)
-    result = analyze_product(user_info, product_info, image_data_base64)
-
+    print(product_info)
+    result = analyze_product(user_info, product_info)
+    print(result)
     # Process the result using regex to create the desired JSON format
-    processed_result = {}
-    pattern = r'#\s*(.*?)\s*#:\s*\*\*(.*?)\*\*'
-    matches = re.findall(pattern, result)
-    
-    for key, value in matches:
-        processed_result[key.strip()] = value.strip()
+    pattern = re.compile(r"\(#(.*?)#\): \*\*(.*?)\*\*")
 
-    return jsonify({"analysis": processed_result})
+    # Find all matches
+    matches = pattern.findall(result)
+
+    # Create dictionary from matches
+    result_dict = {}
+    for key, value in matches:
+        # Handle multiple occurrences of the same key
+        if key in result_dict:
+            # Convert value to a list if it's not already
+            if not isinstance(result_dict[key], list):
+                result_dict[key] = [result_dict[key]]
+            result_dict[key].append(value)
+        else:
+            result_dict[key] = value
+
+    # Return the dictionary as a JSON response using jsonify
+    return jsonify(result_dict)
+
+
+
 ######################################################################################################
 
 
