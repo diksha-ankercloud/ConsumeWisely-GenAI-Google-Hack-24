@@ -34,7 +34,7 @@ def create_genai_model():
 def get_product_info(product):
     """Retrieve product information using Google Search Retrieval."""
     model_ground = create_genai_model()
-    prompt = f"only give me the nutritional (benefits/harms) content regarding the consumption of {product}. Also give information regarding the parent company and its carbon footprint of available of the{product} . Also find if the product is from a small business or not."
+    prompt = f"Give me the ingredients and composition of this {product}. Give me the nutritional (benefits/harms) content regarding the consumption of {product}. Also give information regarding the parent company and its carbon footprint of available of the{product} . Also find if the product is from a small business or not."
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     response = model_ground.generate_content(prompt, tools=[tool])
     return response.candidates[0].content.parts[0].text
