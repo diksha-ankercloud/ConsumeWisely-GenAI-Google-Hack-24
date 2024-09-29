@@ -476,6 +476,8 @@ def get_search_info(request_data):
     generative_multimodal_model = GenerativeModel("gemini-1.5-flash-001")
     response = generative_multimodal_model.generate_content([prompt])
     ans=response._raw_response.candidates[0].content.parts[0].text
+    ans=ans.replace('**','')
+    ans=ans.replace('*','')
     # After getting the final response from llm we need to removed un wanted parameters to structure the code. since it is an llm response in json format it would give the output in string only so to convert to json remove the '''json at the beggining and ''' at the end
     if ans.startswith(r'```json'):
         json_string = re.search(r'```json(.*?)```', ans, re.DOTALL)
