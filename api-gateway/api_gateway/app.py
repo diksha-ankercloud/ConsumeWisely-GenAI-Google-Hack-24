@@ -362,9 +362,20 @@ def check_product_and_web_search():
             print('Products matched are',matched_products)
             
     if matched_products:
-        
+        images_name=product_data.get('images')
+        des=product_data.get('description')
+        product_information=product_data.get('product_info')
+        product_names=product_data.get('product_name')
+        ans={
+            'description':des,
+            'images':images_name,
+            'product_name':product_names,
+            'product_info':product_information
+        }
+        print(images_name)
+        print('ans',ans)
         # image1=matched_products.get('')
-        return jsonify(matched_products)   
+        return (ans)   
     
     else:
         print('Product not found in the db so searching the other apis.........')
@@ -442,10 +453,10 @@ def get_search_info(request_data):
     # this is the model prompt for search it takes in ingredients and then it also takes in prodcut name
     prompt= f'''
     Do the following for the given {product} using the info from {request_message}:
-    The Description should be about the product a brief explanation what this product is.
+    The Description should be about the product a brief explanation about this product like what is this product.
     Allergens: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any.                                                      
     Diet Suitability: mention if it is suitable for vegan, keto, jain  or gluten-free, diabetic diets, high cholestrol patients etc consumers either one or many options.
-    Ingredients: list all the {request_message} contents of the product with measurements.
+    Ingredients: with ** format for ach ingredients list all the {request_message} contents of the product with measurements.
     Nutritional Benefits/Harms: mention if the product has any nutritional benefits or harms for the health of the consumer based on {request_message}.
     Sustainibility factor: mention if the {product} is organic or supports sustainability or small businesses or is animal cruelty free.
     Recent-news: mention there is any recent news regarding {product} flag it in one or 2 sentences.
@@ -457,8 +468,8 @@ def get_search_info(request_data):
     output_format = '''
         OUTPUT FORMAT:
         {
-        "Description": "",
-        "product": "" ,
+        "description": "",
+        "product_name": "" ,
         "product_info": {
             "allergens": "",
             "diet_suitability": "",
@@ -476,27 +487,31 @@ def get_search_info(request_data):
     generative_multimodal_model = GenerativeModel("gemini-1.5-flash-001")
     response = generative_multimodal_model.generate_content([prompt])
     ans=response._raw_response.candidates[0].content.parts[0].text
+    # After getting the final response from llm we need to removed un wanted parameters to structure the code. since it is an llm response in json format it would give the output in string only so to convert to json remove the '''json at the beggining and ''' at the end
     ans=ans.replace('**','')
     ans=ans.replace('*','')
-    # After getting the final response from llm we need to removed un wanted parameters to structure the code. since it is an llm response in json format it would give the output in string only so to convert to json remove the '''json at the beggining and ''' at the end
     if ans.startswith(r'```json'):
         json_string = re.search(r'```json(.*?)```', ans, re.DOTALL)
         if json_string:
             llm_response = json_string.group(1).strip() 
             
-            print('Json string::',llm_response)
-    product_name = re.search(r'"product":\s*"(.*?)"', llm_response)
+            print('Json string---------------------::',llm_response)
+    product_name = re.search(r'"product_name":\s*"(.*?)"', llm_response)
     # After retriving the final data store it in the firestore db
     if product_name:
+        print('Inside')
         product_name=f"{product_name.group(1)}"
         json_data = json.loads(llm_response)
+        print('Done')
         data_base=store_data_in_firestore(json_data, links,product)
-        print('Data Stored or already exists:::',data_base)
-        links={
-                'images':links
-            }
+        print('Data Stored',data_base)
+        json_data['images']=links
+        description=json_data.get('description')
+        json_data['description']=description
         
-        ans={**json_data,**links}
+        print('Json_data:::',json_data)
+        ans=jsonify(json_data)
+        print('Json Description::',json_data['description'])
         # print('Final_answer:',ans)
     return ans
 
@@ -515,7 +530,7 @@ def store_data_in_firestore(llm_response, links,product):
     link3 = links.get('image-3', None)
     link4 = links.get('image-4', None)
     product_name = product
-    description = llm_response.get("Description")
+    description = llm_response.get("description")
     product_info = llm_response.get("product_info", {})
     allergens = product_info.get("allergens")
     diet_suitability = product_info.get("diet_suitability",None)
