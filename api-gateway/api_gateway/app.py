@@ -234,14 +234,17 @@ products = [
   }
 ]
 
+app = Flask(__name__)
+CORS(app)
+
 @app.route('/')
 def home():
     return "Hello, this is a basic Flask server running on port 4000!"
 
-# Products route
-@app.route('/products', methods=['GET'])
-def list_products():
-    return jsonify(products)
+# # Products route
+# @app.route('/products', methods=['GET'])
+# def list_products():
+#     return jsonify(products)
 
 @app.route('/product/<product_id>', methods=['GET'])
 def get_product(product_id):
