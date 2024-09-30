@@ -490,11 +490,12 @@ def get_search_info(request_data):
         json_data = json.loads(llm_response)
         data_base=store_data_in_firestore(json_data, links,product)
         print('Data Stored or already exists:::',data_base)
-    output_json={
-        "message": json_data,
-        "links":links
-    }
-    return output_json
+        links={
+                'images':links
+            }
+        
+        ans={**json_data,**links}
+    return ans
 
 ##############################################################################################################
 
