@@ -6,7 +6,7 @@ services:
     build:
       context: ./api-gateway
     ports:
-      - "4000:4000"
+      - "5000:5000"
 
 volumes:
   mongo-data:
