@@ -21,8 +21,7 @@ from vertexai.generative_models import (
 ########################### hard coded products from stagnant code #####################################
 
 
-app = Flask(__name__)
-CORS(app)
+
 products = [
   {
     "id" : "1",
@@ -234,12 +233,13 @@ products = [
     "image_ingredients": "https://drive.google.com/file/d/1VaZ1buyNyKvyUsOLfBceIMjVzlSWBpYQ/view?usp=drive_link"
   }
 ]
-
+app = Flask(__name__)
+CORS(app)
 @app.route('/')
 def home():
     return "Hello, this is a basic Flask server running on port 4000!"
 
-# # Products route
+# Products route
 # @app.route('/products', methods=['GET'])
 # def list_products():
 #     return jsonify(products)
@@ -362,9 +362,20 @@ def check_product_and_web_search():
             print('Products matched are',matched_products)
             
     if matched_products:
-        
+        images_name=product_data.get('images')
+        des=product_data.get('description')
+        product_information=product_data.get('product_info')
+        product_names=product_data.get('product_name')
+        ans={
+            'description':des,
+            'images':images_name,
+            'product_name':product_names,
+            'product_info':product_information
+        }
+        print(images_name)
+        print('ans',ans)
         # image1=matched_products.get('')
-        return jsonify(matched_products)   
+        return (ans)   
     
     else:
         print('Product not found in the db so searching the other apis.........')
@@ -442,10 +453,10 @@ def get_search_info(request_data):
     # this is the model prompt for search it takes in ingredients and then it also takes in prodcut name
     prompt= f'''
     Do the following for the given {product} using the info from {request_message}:
-    The Description should be about the product a brief explanation what this product is.
+    The Description should be about the product a brief explanation about this product like what is this product.
     Allergens: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any.                                                      
     Diet Suitability: mention if it is suitable for vegan, keto, jain  or gluten-free, diabetic diets, high cholestrol patients etc consumers either one or many options.
-    Ingredients: list all the {request_message} contents of the product with measurements.
+    Ingredients: with ** format for ach ingredients list all the {request_message} contents of the product with measurements.
     Nutritional Benefits/Harms: mention if the product has any nutritional benefits or harms for the health of the consumer based on {request_message}.
     Sustainibility factor: mention if the {product} is organic or supports sustainability or small businesses or is animal cruelty free.
     Recent-news: mention there is any recent news regarding {product} flag it in one or 2 sentences.
@@ -457,8 +468,8 @@ def get_search_info(request_data):
     output_format = '''
         OUTPUT FORMAT:
         {
-        "Description": "",
-        "product": "" ,
+        "description": "",
+        "product_name": "" ,
         "product_info": {
             "allergens": "",
             "diet_suitability": "",
@@ -477,24 +488,31 @@ def get_search_info(request_data):
     response = generative_multimodal_model.generate_content([prompt])
     ans=response._raw_response.candidates[0].content.parts[0].text
     # After getting the final response from llm we need to removed un wanted parameters to structure the code. since it is an llm response in json format it would give the output in string only so to convert to json remove the '''json at the beggining and ''' at the end
+    ans=ans.replace('**','')
+    ans=ans.replace('*','')
     if ans.startswith(r'```json'):
         json_string = re.search(r'```json(.*?)```', ans, re.DOTALL)
         if json_string:
             llm_response = json_string.group(1).strip() 
             
-            print('Json string::',llm_response)
-    product_name = re.search(r'"product":\s*"(.*?)"', llm_response)
+            print('Json string---------------------::',llm_response)
+    product_name = re.search(r'"product_name":\s*"(.*?)"', llm_response)
     # After retriving the final data store it in the firestore db
     if product_name:
+        print('Inside')
         product_name=f"{product_name.group(1)}"
         json_data = json.loads(llm_response)
+        print('Done')
         data_base=store_data_in_firestore(json_data, links,product)
-        print('Data Stored or already exists:::',data_base)
-        links={
-                'images':links
-            }
+        print('Data Stored',data_base)
+        json_data['images']=links
+        description=json_data.get('description')
+        json_data['description']=description
         
-        ans={**json_data,**links}
+        print('Json_data:::',json_data)
+        ans=jsonify(json_data)
+        print('Json Description::',json_data['description'])
+        # print('Final_answer:',ans)
     return ans
 
 ##############################################################################################################
@@ -512,7 +530,7 @@ def store_data_in_firestore(llm_response, links,product):
     link3 = links.get('image-3', None)
     link4 = links.get('image-4', None)
     product_name = product
-    description = llm_response.get("Description")
+    description = llm_response.get("description")
     product_info = llm_response.get("product_info", {})
     allergens = product_info.get("allergens")
     diet_suitability = product_info.get("diet_suitability",None)
@@ -615,7 +633,7 @@ def create_chat_prompt():
                         (#nutrient alert#): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories take into consideration all micro and macro nutrients)
                         (#carbon footprint info#): give info about carbon footprint of the product and also give info about the parent company of the product.
                         (#recomendation#):Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product if 3 or 2 out of 6 categories match say mid recommendation otherwise any lessser say none in  (** **)  
-                      Your final answer should only contain tags among one option of each category based on product nutrition analysis.
+                       Your final answer should only contain tags among one option of each category based on product nutrition analysis.
                         If the answer is None just drop that category output.
                         
                         Your next input will be the info of the person, the name of the product, and screenshot of the ingredients
@@ -704,8 +722,94 @@ def analyze_product_endpoint():
 
 
 
-
 ######################################################################################################
+
+############################listing 2 recipes api ######################################################
+# Define route for getting recipes this function needs the name of the product as well as the diet type such as vegan/ketojain/high choletrol/low sugar etc
+@app.route('/get_recipes', methods=['POST'])
+def get_recipes():
+    # Get the input parameters from the request
+    data = request.json
+    product = data.get('product')  # Default value if not provided
+    restrictions = data.get('restrictions')  # Default value if not provided
+    
+    # Initialize generative model
+    model_ground = GenerativeModel("gemini-1.5-flash-001")
+    
+    # Generate product information
+    PROMPT = f"give me the description, ingredients and flavor profile or taste of this {product}"
+    tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
+    response = model_ground.generate_content(PROMPT, tools=[tool])
+    food_info = response.candidates[0].content.parts[0].text
+
+    # Chat model for generating recipes
+    model = ChatGoogleGenerativeAI(
+        model="gemini-1.5-flash-001",
+        temperature=0,
+        max_tokens=None,
+        timeout=None,
+        max_retries=2,
+    )
+
+    chat_prompt = ChatPromptTemplate.from_messages(
+        messages=[
+            SystemMessage(
+                content='''You are a great chef that can give quick and easy recipes following specific diets, ingredients, and taste. You will be given the product and its description, and you must provide 2 dishes with simple recipes using that product or similar. If there are dietary restrictions, suggest alternatives that retain similar taste.'''
+            ),
+            HumanMessagePromptTemplate.from_template(
+                template=f'''
+                The info is the following:
+                the product name of the major foods in the recipe: {{product}}. and the major info regarding the product such as description, taste and ingredients {{food_info}}.
+                Limit the recipes to these dietary restrictions: {{restrictions}}.
+                Provide the following details:
+                (#Recipe Name#): (**short, fun catchy name for recipe here**)
+                (#Description#): (**description of the recipe in not more than 1 line. This should include keywords like keto, vegan, jain, cholesterol-less, sugar-free, high-protein, etc.**)
+                Example output format: follow the following format to give the out put the category shoudld be in (# #) and the content in (*** ***)
+                (#Recipe 1 Name#): (** the name of tthe recipe should be here **)
+                (#Description#): (** description **)
+                (#Recipe 2 Name#): (** the name of tthe recipe should be here**)
+                (#Description#): (** description **)
+                Make sure to follow the format  donnot add ingredients or any other stuff.print each recipe only once.
+                
+                '''
+            ),
+        ]
+    )
+    
+    # Chain the model with the prompt
+    chain = chat_prompt | model
+    response_from_model = chain.invoke(
+        {
+            "product": product,
+            "food_info": food_info,
+            "restrictions": restrictions
+        }
+    )
+
+    # Extract and format the recipes
+    
+    
+    recipe_2 = response_from_model.content
+    print(recipe_2)
+    pattern = r'\(#Recipe (\d+) Name#\): \(\*\*(.*?)\*\*\)\s*\n\(#Description#\): \(\*\*(.*?)\*\*\)'
+    matches = re.findall(pattern, recipe_2)
+
+    # Prepare the output format
+    result = []
+    for match in matches:
+        recipe_name = match[1].strip()  # Recipe name
+        description = match[2].strip()  # Description
+        result.append({
+            "Recipe Name": recipe_name,
+            "Description": description
+        })
+
+    # Convert to JSON and return
+    return jsonify({"recipes": result})     # outputs recipe name and a brief description
+########################################################################################################
+
+
+
 
 
 
