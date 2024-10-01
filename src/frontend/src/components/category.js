@@ -7,23 +7,11 @@ function Category() {
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-12">
+            <h2 className="section-title" style={{ textAlign: 'center', fontWeight: 'bold', paddingTop: '0px' }}>One Click Results from AI Quick Scan</h2>
               <div className="section-header d-flex flex-wrap justify-content-between mb-5">
-                <h2 className="section-title">Category</h2>
-                <div className="d-flex align-items-center">
-                  <a href="#" className="btn-link text-decoration-none">
-                    View All Categories →
-                  </a>
-                  <div className="swiper-buttons">
-                    <button
-                      className="swiper-prev category-carousel-prev btn btn-yellow"
-                    >
-                      ❮
-                    </button>
-                    <button className="swiper-next category-carousel-next btn btn-yellow">
-                      ❯
-                    </button>
-                  </div>
-                </div>
+                
+                
+                
               </div>
             </div>
           </div>
@@ -47,7 +35,7 @@ function Category() {
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">
-                          Supports Small Businesses
+                           Catch Allergens
                         </h3>
                       </a>
                     </SwiperSlide>
@@ -60,7 +48,7 @@ function Category() {
                           src="images/icon-animal-products-drumsticks.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Animal Cruelty-Free</h3>
+                        <h3 className="category-title">Major Nutrients</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -72,7 +60,7 @@ function Category() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Vegan</h3>
+                        <h3 className="category-title">Diet Sutability</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -84,7 +72,19 @@ function Category() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Non Organinc</h3>
+                        <h3 className="category-title">Animal cruelty free</h3>
+                      </a>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                      <a
+                        href="category.html"
+                        className="nav-link category-item "
+                      >
+                        <img
+                          src="images/icon-vegetables-broccoli.png"
+                          alt="Category Thumbnail"
+                        />
+                        <h3 className="category-title">Sustainable</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
