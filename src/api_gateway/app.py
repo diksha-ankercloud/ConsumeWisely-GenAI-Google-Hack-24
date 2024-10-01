@@ -107,11 +107,11 @@ def list_search_products():
 
 
 # This is the first function to check if the product exists in the db  if not it goes to the else block and from the model and vertex-ai, custom search it brings the data for storing it in db.
+# This is the first function to check if the product exists in the db  if not it goes to the else block and from the model and vertex-ai, custom search it brings the data for storing it in db.
 @app.route('/check_product_and_web_search',methods=['POST'])
 def check_product_and_web_search():
 
-    data = request.get_json()
-    product_name=data["product"]
+    product_name=request.form.get('product')
     print('Product name',product_name)
     search_words = product_name.lower()
     products_ref = db.collection('products')
@@ -139,12 +139,12 @@ def check_product_and_web_search():
         print(images_name)
         print('ans',ans)
         # image1=matched_products.get('')
-        return jsonify(matched_products[0])   
-    
+        return (ans) 
     else:
         print('Product not found in the db so searching the other apis.........')
         final=get_combined_ingre_img(product_name)
         return final
+    
     
 # This is the second function that it calls if the product name was not found in the firestore db. it gets the produt name and first pass it to the vertex ai search api then gets the image link and bytes code form the downloadimage function and finally pass it to the chat-bot to categorize the product.
 def get_combined_ingre_img(product_name):
@@ -204,7 +204,6 @@ def downloadImage(searchTerm):
     }
     return res
 
-#This function categorize the product into different categories and finally store it in db.
 def get_search_info(request_data):
     print('Hi there you are inside the function',request_data)
     if request_data.get('product'):
