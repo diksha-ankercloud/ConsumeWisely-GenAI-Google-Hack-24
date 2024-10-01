@@ -44,7 +44,6 @@ function App() {
       <>
         <Header />
         <RouterProvider router={router} />
-        <Chatbot/>
         <Footer />
       </>
     </div>
