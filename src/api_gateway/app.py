@@ -26,10 +26,10 @@ load_dotenv()
 
 #keys required to run application
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] ="./cred.json"
-vertexai.init(project="vision-forge-414908", location="us-central1")
-os.environ["cxid"] = "20551f7fc808b4671"
+vertexai.init(project="", location="")
+os.environ["cxid"] = ""
 cxid = os.environ['cxid']
-os.environ["apikey"] = "AIzaSyA9zpnFCZ51r7rnGz7vxNQbjcj8AzIV4m0"
+os.environ["apikey"] = ""
 apikey = os.environ['apikey']
 search_url = "https://www.googleapis.com/customsearch/v1"
 # genai.configure(api_key = os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
@@ -161,7 +161,7 @@ def get_combined_ingre_img(product_name):
         "links":links
     }
     res=get_search_info(request_data)
-    return jsonify(res)
+    return (res)
 
 def get_ingre_search(product):
     prompt = f"what are the ingredients or major composition of {product}"
