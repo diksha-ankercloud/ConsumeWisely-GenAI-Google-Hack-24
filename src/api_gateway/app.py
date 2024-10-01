@@ -111,8 +111,10 @@ def list_search_products():
 @app.route('/check_product_and_web_search',methods=['POST'])
 def check_product_and_web_search():
 
-    product_name=request.form.get('product')
+    data = request.get_json()
+    product_name=data["product"]
     print('Product name',product_name)
+
     search_words = product_name.lower()
     products_ref = db.collection('products')
     matched_products = []

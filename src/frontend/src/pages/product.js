@@ -90,7 +90,7 @@ function Product({}) {
 
     try {
       const response = await axios.post(url, body);
-      setProductDetails(response.data.message);
+      setProductDetails(response.data);
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
