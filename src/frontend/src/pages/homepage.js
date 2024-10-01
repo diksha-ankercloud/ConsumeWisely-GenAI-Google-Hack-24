@@ -1,4 +1,5 @@
 import Category from "../components/category";
+import Category1 from "../components/category1";
 
 function Homepage() {
   return (
@@ -22,18 +23,18 @@ function Homepage() {
                       <div className="swiper-slide">
                         <div className="row banner-content p-5">
                           <div className="content-wrapper col-md-7">
-                            <div className="categories my-3">100% natural</div>
+                            <div className="categories my-3">Faster choices</div>
                             <h3 className="display-4">
-                              Fresh Smoothie &amp; Summer Juice
+                              Easier decisions using AI personalisation
                             </h3>
                             <p>
-                              Order for your soul and not just taste!
+                              Find hidden product info using smart AI results
                             </p>
                             <a
                               href="#"
                               className="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3"
                             >
-                              Shop Now
+                              Search
                             </a>
                           </div>
                           <div className="img-wrapper col-md-5">
@@ -116,17 +117,9 @@ function Homepage() {
                 >
                   <div className="row banner-content p-5">
                     <div className="content-wrapper col-md-7">
-                      <div className="categories sale mb-3 pb-3">20% off</div>
-                      <h3 className="banner-title">Fruits &amp; Vegetables</h3>
-                      <a
-                        href="#"
-                        className="d-flex align-items-center nav-link"
-                      >
-                        Shop Collection{" "}
-                        <svg width={24} height={24}>
-                          <use xlinkHref="#arrow-right" />
-                        </svg>
-                      </a>
+                      <div className="categories sale mb-3 pb-3">Smart choices</div>
+                      <h5 className="banner-title">Choose based on your preferences</h5>
+                      
                     </div>
                   </div>
                 </div>
@@ -139,17 +132,9 @@ function Homepage() {
                 >
                   <div className="row banner-content p-5">
                     <div className="content-wrapper col-md-7">
-                      <div className="categories sale mb-3 pb-3">15% off</div>
-                      <h3 className="item-title">Baked Products</h3>
-                      <a
-                        href="#"
-                        className="d-flex align-items-center nav-link"
-                      >
-                        Shop Collection{" "}
-                        <svg width={24} height={24}>
-                          <use xlinkHref="#arrow-right" />
-                        </svg>
-                      </a>
+                      <div className="categories sale mb-3 pb-3">Get Creative</div>
+                      <h5 className="item-title">Recipes based on your cravings</h5>
+                     
                     </div>
                   </div>
                 </div>
@@ -159,9 +144,12 @@ function Homepage() {
           </div>
         </div>
       </section>
+      <h2 className="section-title" style={{ textAlign: 'center', fontWeight: 'bold', paddingTop: '40px' }}>Our Best Features for you</h2 >
       <section className="py-5">
+      
         <div className="container-fluid">
           <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+          
             <div className="col">
               <div className="card mb-3 border-0">
                 <div className="row">
@@ -182,7 +170,7 @@ function Homepage() {
                     <div className="card-body p-0">
                       <h5><h5><strong>Personalised Products</strong></h5></h5>
                       <p className="card-text">
-                        Get your Recommendationsas per your dietry plans!
+                        Get your Recommendationsas per your dietry plans and goals!
                       </p>
                     </div>
                   </div>
@@ -261,9 +249,9 @@ function Homepage() {
                   </div>
                   <div className="col-md-10">
                     <div className="card-body p-0">
-                      <h5><h5><strong>AI Assistant for you </strong></h5></h5>
+                      <h5><h5><strong>All product Scans</strong></h5></h5>
                       <p className="card-text">
-                      24*7 Chat Assistant available to help you understand your products better!
+                      Scan each product on the internet to check dietary requiremnts!
                       </p>
                     </div>
                   </div>
@@ -290,7 +278,7 @@ function Homepage() {
                     <div className="card-body p-0">
                       <h5><h5><strong>Vocal for Local</strong></h5></h5>
                       <p className="card-text">
-                      Get 100 % Reedemable Reward points for supporting local organic food!
+                      We flag small business to help them grow!
                       </p>
                     </div>
                   </div>
@@ -300,23 +288,14 @@ function Homepage() {
           </div>
         </div>
       </section>
-      <Category/>
-       
-
-
+      
       <section id="latest-blog" className="py-5">
         <div className="container-fluid">
           <div className="row">
+          <h2 className="section-title" style={{ textAlign: 'center', fontWeight: 'bold', paddingTop: '0px' }}>Our Push towards Sustainibility</h2>
             <div className="section-header d-flex align-items-center justify-content-between my-5">
-              <h2 className="section-title">Our Recent Blog</h2>
-              <div className="btn-wrap align-right">
-                <a href="#" className="d-flex align-items-center nav-link">
-                  Read All Articles{" "}
-                  <svg width={24} height={24}>
-                    <use xlinkHref="#arrow-right" />
-                  </svg>
-                </a>
-              </div>
+            
+             
             </div>
           </div>
           <div className="row">
@@ -333,27 +312,17 @@ function Homepage() {
                 </div>
                 <div className="card-body">
                   <div className="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
-                    <div className="meta-date">
-                      <svg width={16} height={16}>
-                        <use xlinkHref="#calendar" />
-                      </svg>
-                      22 Aug 2021
-                    </div>
-                    <div className="meta-categories">
-                      <svg width={16} height={16}>
-                        <use xlinkHref="#category" />
-                      </svg>
-                      tips &amp; tricks
-                    </div>
+                    
+                    
                   </div>
                   <div className="post-header">
                     <h3 className="post-title">
                       <a href="#" className="text-decoration-none">
-                        Do you know your Carbon Footprint?
+                        Carbon footprints of your favourite brands
                       </a>
                     </h3>
                     <p>
-                    A carbon footprint is the total amount of greenhouse gases (GHGs) released into the atmosphere by a person, organization, event, or product. It's calculated by adding up emissions from every stage of a product or service's life, including production, manufacturing, use, and end-of-life....
+                    At Consumewisely, we flag products that minimize their carbon footprint, helping you make eco-friendly choices effortlessly. From sustainable manufacturing to lower emissions, we highlight the products that contribute less to greenhouse gases. Take control of your environmental impact and make a difference with every purchase through Consumewisely!
                     </p>
                   </div>
                 </div>
@@ -373,27 +342,17 @@ function Homepage() {
                 </div>
                 <div className="card-body">
                   <div className="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
-                    <div className="meta-date">
-                      <svg width={16} height={16}>
-                        <use xlinkHref="#calendar" />
-                      </svg>
-                      25 Aug 2021
-                    </div>
-                    <div className="meta-categories">
-                      <svg width={16} height={16}>
-                        <use xlinkHref="#category" />
-                      </svg>
-                      trending
-                    </div>
+                   
+                   
                   </div>
                   <div className="post-header">
                     <h3 className="post-title">
                       <a href="#" className="text-decoration-none">
-                        Latest 2024 trends for Sustainability!
+                        Following sutanibility in the present!
                       </a>
                     </h3>
                     <p>
-                      From governments to Fortune 500 companies, sustainability is on the top of everyone's agenda in 2024.....
+                    With Consumewisely, you’re always in the know! We showcase the latest products that align with 2024’s top sustainability trends. From eco-friendly innovations to companies adopting green practices, we flag the products that are leading the way. Make sustainable choices that are not just good for you, but great for the planet!
                     </p>
                   </div>
                 </div>
@@ -412,18 +371,8 @@ function Homepage() {
                 </div>
                 <div className="card-body">
                   <div className="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
-                    <div className="meta-date">
-                      <svg width={16} height={16}>
-                        <use xlinkHref="#calendar" />
-                      </svg>
-                      28 Aug 2021
-                    </div>
-                    <div className="meta-categories">
-                      <svg width={16} height={16}>
-                        <use xlinkHref="#category" />
-                      </svg>
-                      inspiration
-                    </div>
+                   
+                    
                   </div>
                   <div className="post-header">
                     <h3 className="post-title">
@@ -432,7 +381,7 @@ function Homepage() {
                       </a>
                     </h3>
                     <p>
-                    Looking for packaging solutions for organic products? OF Pack has a wide range of recyclable and compostable options.
+                    Looking for clean, natural, and eco-friendly food options? Consumewisely flags the best organic products for you! Discover chemical-free, sustainably grown foods, and learn how they benefit both your health and the environment. Plus, find packaging solutions that minimize waste. Eat clean and live green with Consumewisely!
                     </p>
                   </div>
                 </div>
@@ -441,6 +390,11 @@ function Homepage() {
           </div>
         </div>
       </section>
+
+      <Category/>
+      <Category1/>
+       
+
 
      
     </>
