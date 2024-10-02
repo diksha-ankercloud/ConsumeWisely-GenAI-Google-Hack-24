@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway
+    ports:
+      - "5000:5000"
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  consume-wisely-network:
+    driver: bridge
