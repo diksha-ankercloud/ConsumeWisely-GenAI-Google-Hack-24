@@ -395,7 +395,7 @@ def create_chat_prompt():
                         You will be given a product and its ingredients select one from each category based on the ingredients and health goals of the person only add in the result each category name should be in (#category#) and only answer of each category in (** **).
                         Output should lool like:
                         RESULTS:
-                        (#Frequency of cunsumption#): how frequently can i consume it based on my weight goals:
+                        (#Frequency of consumption#): how frequently can i consume it based on my weight goals:
                         1. daily consumption
                         2. weekly consumption
                         3. monthly consumption
