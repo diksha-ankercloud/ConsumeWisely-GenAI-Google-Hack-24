@@ -22,11 +22,12 @@ function Category1() {
                         className="nav-link category-item"
                       >
                         <img
-                          src="images/icon-vegetables-broccoli.png"
+                          src="images/icon-bread-herb-flour.png"
+                          
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">
-                           Organic food flagging 
+                           Organic foods and practices flagging 
                         </h3>
                       </a>
                     </SwiperSlide>
@@ -36,7 +37,7 @@ function Category1() {
                         className="nav-link category-item "
                       >
                         <img
-                          src="images/icon-animal-products-drumsticks.png"
+                          src="images/icon-wine-glass-bottle.png"
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">Deciper false claims in a click</h3>
@@ -48,7 +49,7 @@ function Category1() {
                         className="nav-link category-item "
                       >
                         <img
-                          src="images/icon-vegetables-broccoli.png"
+                          src="images/icon-soft-drinks-bottle.png"
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">Alerts on major preservatives</h3>
@@ -60,10 +61,10 @@ function Category1() {
                         className="nav-link category-item "
                       >
                         <img
-                          src="images/icon-vegetables-broccoli.png"
+                          src="images/icon-small-business.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Small Business Support tagging</h3>
+                        <h3 className="category-title">Small Business Tag</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
