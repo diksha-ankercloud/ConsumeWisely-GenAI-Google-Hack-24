@@ -22,10 +22,7 @@ load_dotenv()
 def initialize_environment():
     """Initialize environment variables and Google Cloud settings."""
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "C:/Users/DELL/Downloads/13-Google-GenAI-Hack-24/GenAI-Google--Hack-24/vision-forge-414908-d792f2fc2ff6.json"
-    
-    PROJECT_ID = "vision-forge-414908"
-    REGION = "us-central1"
-    vertexai.init(project=PROJECT_ID, location=REGION)
+
 
 def create_genai_model():
     """Create and return a GenerativeModel instance."""
