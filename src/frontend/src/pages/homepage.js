@@ -111,14 +111,14 @@ function Homepage() {
                 <div
                   className="banner-ad bg-success-subtle block-2"
                   style={{
-                    background: 'url("images/ad-image-1.png") no-repeat',
+                    background: 'url("images/veggie-bag.png") no-repeat',
                     backgroundPosition: "right bottom",
                   }}
                 >
                   <div className="row banner-content p-5">
                     <div className="content-wrapper col-md-7">
                       <div className="categories sale mb-3 pb-3">Smart choices</div>
-                      <h5 className="banner-title">Choose based on your preferences</h5>
+                      <h5 className="banner-title">AI Scan for all products</h5>
                       
                     </div>
                   </div>
