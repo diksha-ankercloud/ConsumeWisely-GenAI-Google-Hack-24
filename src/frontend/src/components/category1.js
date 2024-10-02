@@ -26,7 +26,7 @@ function Category1() {
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">
-                           Organics
+                           Organic food flagging 
                         </h3>
                       </a>
                     </SwiperSlide>
@@ -39,7 +39,7 @@ function Category1() {
                           src="images/icon-animal-products-drumsticks.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Flase Claims</h3>
+                        <h3 className="category-title">Deciper false claims in a click</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -51,7 +51,7 @@ function Category1() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Harmful ingredients</h3>
+                        <h3 className="category-title">Alerts on major preservatives</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -63,7 +63,7 @@ function Category1() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">mall Businesses</h3>
+                        <h3 className="category-title">Small Business Support tagging</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -75,7 +75,7 @@ function Category1() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Sustainable</h3>
+                        <h3 className="category-title">Sustainablility factors flagging</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
