@@ -402,7 +402,7 @@ def create_chat_prompt():
                         (#habit of eating#): and as per my diet is this food :
                         1. nutritional
                         2. recreational
-                        3.  or regular consumption for me
+                        3. or regular consumption for me
 
                         (#sustainibility parameters#): Imention if the product has the following characteristics:
                         1. Organic
@@ -415,7 +415,7 @@ def create_chat_prompt():
                         (#diet type#): you need to also flag diet type match this with the input of user info and flag if it is suitable for their dietary type or restrictions(eg vegan/jain/vegetarian/keto) based on user input , answer should be in (** **) mentioning which diet it is suitable or not suitable for.
                         (#nutrient alert#): Alert if there is a higher presence of nutrients desired in low qty (fats, sugar, sodium, calories take into consideration all micro and macro nutrients)
                         (#carbon footprint info#): give info about carbon footprint of the product and also give info about the parent company of the product.
-                        (#recomendation#):Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product if 3 or 2 out of 6 categories match say mid recommendation otherwise any lessser say none in  (** **)  
+                        (#recommendation#):Finally if the 4 out of 6 categories are suitable for this user add that as highly recommended product if 3 or 2 out of 6 categories match say mid recommendation otherwise any lessser say none in  (** **)  
                        Your final answer should only contain tags among one option of each category based on product nutrition analysis.
                         If the answer is None just drop that category output.
                         
