@@ -46,6 +46,16 @@ Based on user's physical attributes and health goals:
 ### 6. Multilingual Support
 - Allows users to navigate the website in their preferred language
 
+  
+### Prerequisites
+- Node.js and npm (for React)
+- Python 3.x (for the backend)
+- Git (for cloning the repository)
+
+### Step 1: Clone the Repository
+''' git clone https://github.com/yourusername/consumewisely.git '''
+
+
 Consume Wisely helps you make the right choice for your product purchase where you can know the exact product that best suits your diet and health.
 
 - The list_products API basically retrives all the products available in the Firestore and display it in the UI.
