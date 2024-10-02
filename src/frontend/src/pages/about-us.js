@@ -39,10 +39,10 @@ function AboutUs() {
           </div>
           <h2>Scan, Analyze, Choose Better</h2>
           <div className="row">
-            <div className="col-md-4">
+            <div className="col-md-12">
                <p>Multi-Modal Access: Scan labels, search for products, or use voice commands.</p>
                 </div>
-            <div className="col-md-4">
+           
               <p>
               We want to build a transparent, scalable, and inclusive benchmarking Brands/Products, aiming to measure and improve the performance of AI across diverse domains and multiple modalities, in every language.
               </p>
@@ -56,14 +56,11 @@ function AboutUs() {
                 sunt in culpa qui officia deserunt mollit anim id est laborum.
                 Sed ut perspiciatis unde omnis iste.
               </p>
-            </div>
-            <div className="col-md-4">
               <p> Personalized Health Analysis: Tailored recommendations based on your dietary needs and preferences.</p>
       
             
               <p>To some food experts, packaged foods are a cardinal sin. But some packaged foods are better than others. Curious to know which packaged foods you should add to your diet? Tap on Personalise button to get all the information about product
               </p>
-            </div>
           </div>
         </div>
       </section>
@@ -77,14 +74,7 @@ function AboutUs() {
           >
             <div className="container">
               <div className="row">
-                <div className="col-md-4">
-                  <img
-                    src="images/phone.png"
-                    alt="phone"
-                    className="image-float img-fluid"
-                  />
-                </div>
-                <div className="col-md-8">
+                <div className="col-md-12">
                   <h2 className="my-5">Shop faster with foodmart App</h2>
                   <p>
                   <h4><strong>What We Solve For:</strong></h4>
@@ -100,15 +90,14 @@ function AboutUs() {
 
 </p>
  </p>
-                  <div className="d-flex gap-2 flex-wrap">
-                    <img src="images/app-store.jpg" alt="app-store" />
-                    <img src="images/google-play.jpg" alt="google-play" />
-                  </div>
+               
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        
       </section>
     </>
   );
