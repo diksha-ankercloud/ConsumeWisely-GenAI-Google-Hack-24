@@ -31,7 +31,7 @@ function Category() {
                         className="nav-link category-item"
                       >
                         <img
-                          src="images/icon-vegetables-broccoli.png"
+                          src="images/icon-bread-baguette.png"
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">
@@ -45,7 +45,7 @@ function Category() {
                         className="nav-link category-item "
                       >
                         <img
-                          src="images/icon-animal-products-drumsticks.png"
+                          src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">Highlight macro nutrients</h3>
@@ -57,7 +57,7 @@ function Category() {
                         className="nav-link category-item "
                       >
                         <img
-                          src="images/icon-vegetables-broccoli.png"
+                          src="images/icon-bread-herb-flour.png"
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">Diet Suitability for jain/keto/vegan etc</h3>
@@ -69,7 +69,7 @@ function Category() {
                         className="nav-link category-item "
                       >
                         <img
-                          src="images/icon-vegetables-broccoli.png"
+                          src="images/icon-animal-products-drumsticks.png"
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">Animal cruelty free flagging</h3>
