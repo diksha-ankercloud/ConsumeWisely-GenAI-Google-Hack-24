@@ -216,9 +216,9 @@ def get_search_info(request_data):
     links=request_data.get('links')
         
     # this is the model prompt for search it takes in ingredients and then it also takes in prodcut name
-    prompt=  prompt= f'''
+    prompt= f'''
     Do the following for the given {product} using the info from {request_message}:
-    The Description should be about the product a brief explanation about this product like what is this product.
+    First mention the {product} category(eg: bakery, meats, snacks, drinks etc) .The Description should be about the product a brief explanation about this product like what is this product. 
     Allergens: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any.                                                      
     Diet Suitability: mention if it is suitable for vegan, keto, jain  or gluten-free, diabetic diets, high cholestrol patients etc consumers either one or many options.
     Ingredients: Give per serving nutrients and ingredient of the {product} using these {request_message}. Use proper gms and measurements for giving ingredients info using serving size,
@@ -233,7 +233,7 @@ def get_search_info(request_data):
     output_format = '''
         OUTPUT FORMAT:
         {
-        "description": "",
+        "description": "mention product category: and then detailed description ",
         "product_name": "" ,
         "product_info": {
             "allergens": "",
