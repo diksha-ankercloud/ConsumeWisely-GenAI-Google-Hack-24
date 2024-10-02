@@ -1,4 +1,50 @@
 # GenAI-Google--Hack-24
+# ConsumeWisely
+
+## About
+ConsumeWisely empowers consumers to make informed choices about packaged food by providing instant, accurate nutritional insights. It decodes labels, analyzes ingredients, and verifies health claims, helping users understand how products fit their goals (e.g., weight loss, allergies).
+
+This AI-powered platform simplifies label reading and empowers healthier choices by analyzing ingredients, verifying claims, and offering personalized insights.
+
+At ConsumeWisely, we leverage Generative AI to automate the collection of data from packaged food products, providing you with instant, reliable insights. From understanding the ingredients to the brand's nutritional claims, our AI-driven product catalog helps you make informed as well as easy non-cluttered decisions about the foods you consume.
+
+## Features
+
+### 1. Quick AI Scan
+Provides complete product details including:
+- Product category
+- Product description
+- Brief on taste
+- Allergies and cross-contamination allergens
+- Sustainability assessment based on global rules (organics, reusable packaging, animal cruelty-free, etc.)
+- Harmful or beneficial nutrients
+- Diet types (keto/vegan/vegetarian/cholesterol-free/sugar-free, etc.)
+- Recent news about the product
+- Per serving ingredients and nutrients
+- False claims check
+
+### 2. Personalized Consumption Analysis
+Based on user's physical attributes and health goals:
+- Recommended consumption frequency based on weight goals
+- Eating habits analysis
+- Consumption and allergy alerts
+- Diet suitability check
+- Carbon footprint assessment of product and company
+
+### 3. Recipe Recommendations
+- Tailored recipes based on user's diet plan and requirements
+- Suggestions incorporating current product choices
+
+### 4. Dynamic Product Catalog
+- Exhaustive and continuously updated catalog
+- End-to-end information on food products across the internet
+
+### 5. Intelligent Chatbot
+- Assists with multi-modal inputs
+- Enables scanning of physical products
+
+### 6. Multilingual Support
+- Allows users to navigate the website in their preferred language
 
 Consume Wisely helps you make the right choice for your product purchase where you can know the exact product that best suits your diet and health.
 
