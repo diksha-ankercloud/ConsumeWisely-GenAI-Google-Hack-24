@@ -254,8 +254,8 @@ def get_product(product_id):
     return "Not Found"
  
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] ="cred.json"
-vertexai.init(project="vision-forge-414908", location="us-central1")
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =""
+vertexai.init(project="", location="")
 search_url = "https://www.googleapis.com/customsearch/v1"
 collection_name="Shopping-Products"
 db = firestore.Client.from_service_account_json(os.environ['GOOGLE_APPLICATION_CREDENTIALS'])
