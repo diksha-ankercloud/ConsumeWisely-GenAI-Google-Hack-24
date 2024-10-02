@@ -35,7 +35,7 @@ function Category() {
                           alt="Category Thumbnail"
                         />
                         <h3 className="category-title">
-                           Catch Allergens
+                           Quick and thorough Allergy alerts
                         </h3>
                       </a>
                     </SwiperSlide>
@@ -48,7 +48,7 @@ function Category() {
                           src="images/icon-animal-products-drumsticks.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Major Nutrients</h3>
+                        <h3 className="category-title">Highlight macro nutrients</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -60,7 +60,7 @@ function Category() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Diet Sutability</h3>
+                        <h3 className="category-title">Diet Suitability for jain/keto/vegan etc</h3>
                       </a>
                     </SwiperSlide>
                     <SwiperSlide>
@@ -72,33 +72,10 @@ function Category() {
                           src="images/icon-vegetables-broccoli.png"
                           alt="Category Thumbnail"
                         />
-                        <h3 className="category-title">Animal cruelty free</h3>
+                        <h3 className="category-title">Animal cruelty free flagging</h3>
                       </a>
                     </SwiperSlide>
-                    <SwiperSlide>
-                      <a
-                        href="category.html"
-                        className="nav-link category-item "
-                      >
-                        <img
-                          src="images/icon-vegetables-broccoli.png"
-                          alt="Category Thumbnail"
-                        />
-                        <h3 className="category-title">Sustainable</h3>
-                      </a>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                      <a
-                        href="category.html"
-                        className="nav-link category-item "
-                      >
-                        <img
-                          src="images/icon-vegetables-broccoli.png"
-                          alt="Category Thumbnail"
-                        />
-                        <h3 className="category-title">Sustainable</h3>
-                      </a>
-                    </SwiperSlide>
+                    
                     ...
                   </Swiper>
                 </div>
