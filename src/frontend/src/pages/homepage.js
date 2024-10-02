@@ -288,7 +288,8 @@ function Homepage() {
           </div>
         </div>
       </section>
-      
+      <Category/>
+      <Category1/>
       <section id="latest-blog" className="py-5">
         <div className="container-fluid">
           <div className="row">
@@ -391,8 +392,7 @@ function Homepage() {
         </div>
       </section>
 
-      <Category/>
-      <Category1/>
+      
        
 
 
