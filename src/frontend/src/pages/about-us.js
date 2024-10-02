@@ -46,15 +46,13 @@ function AboutUs() {
               <p>
               We want to build a transparent, scalable, and inclusive benchmarking Brands/Products, aiming to measure and improve the performance of AI across diverse domains and multiple modalities, in every language.
               </p>
+              
+              <p><h2>Why Choose ConsumeWisely?</h2></p>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-                Sed ut perspiciatis unde omnis iste.
+                Accurate Data: Our system ensures precise data capture from product labels, keeping you informed.
+                Dynamic Updates: We constantly update our database as new products hit the market.
+                Exhaustive Catalog: With partnerships across leading retailers like Blinkit and BigBasket, we provide a vast array of products.
+                Insightful Augmentation: From categorizing products based on your preferences to enriching the raw data for enhanced understanding.
               </p>
               <p> Personalized Health Analysis: Tailored recommendations based on your dietary needs and preferences.</p>
       
