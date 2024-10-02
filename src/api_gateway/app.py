@@ -166,7 +166,7 @@ def get_combined_ingre_img(product_name):
     return (res)
 
 def get_ingre_search(product):
-    prompt = f"what are the ingredients or major composition of {product}"
+    prompt = f"what are the ingredients or major composition of {product}. Also give me the per gram serving of macronutrients or different nutrients in per serving of this {product}"
     tool = Tool.from_google_search_retrieval(grounding.GoogleSearchRetrieval())
     model = GenerativeModel("gemini-1.5-flash-001")
     response = model.generate_content(prompt, tools=[tool])
@@ -216,12 +216,12 @@ def get_search_info(request_data):
     links=request_data.get('links')
         
     # this is the model prompt for search it takes in ingredients and then it also takes in prodcut name
-    prompt= f'''
+    prompt=  prompt= f'''
     Do the following for the given {product} using the info from {request_message}:
     The Description should be about the product a brief explanation about this product like what is this product.
     Allergens: flag allergens if they are related to my allergy otherwise don't flag a warning if there are any.                                                      
     Diet Suitability: mention if it is suitable for vegan, keto, jain  or gluten-free, diabetic diets, high cholestrol patients etc consumers either one or many options.
-    Ingredients: with ** format for ach ingredients list all the {request_message} contents of the product with measurements.
+    Ingredients: Give per serving nutrients and ingredient of the {product} using these {request_message}. Use proper gms and measurements for giving ingredients info using serving size,
     Nutritional Benefits/Harms: mention if the product has any nutritional benefits or harms for the health of the consumer based on {request_message}.
     Sustainibility factor: mention if the {product} is organic or supports sustainability or small businesses or is animal cruelty free.
     Recent-news: mention there is any recent news regarding {product} flag it in one or 2 sentences.
