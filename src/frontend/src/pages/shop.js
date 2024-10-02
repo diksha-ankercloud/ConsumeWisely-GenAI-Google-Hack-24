@@ -23,7 +23,7 @@ function Shop() {
   const fetchProducts = async () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/list_products`); 
-      console.log(response)
+      console.log(response);
       setProducts(response.data);
     } catch (err) {
       setError(err.message);
@@ -41,23 +41,14 @@ function Shop() {
 
   return (
     <>
-      <section
-        className="py-5 mb-5"
-        style={{ background: "url(images/background-pattern.jpg)" }}
-      >
+      <section className="py-5 mb-5" style={{ background: "url(images/background-pattern.jpg)" }}>
         <div className="container-fluid">
           <div className="d-flex justify-content-between">
             <h1 className="page-title pb-2">Shop</h1>
             <nav className="breadcrumb fs-6">
-              <a className="breadcrumb-item nav-link" href="#">
-                Home
-              </a>
-              <a className="breadcrumb-item nav-link" href="#">
-                Pages
-              </a>
-              <span className="breadcrumb-item active" aria-current="page">
-                Shop
-              </span>
+              <a className="breadcrumb-item nav-link" href="#">Home</a>
+              <a className="breadcrumb-item nav-link" href="#">Pages</a>
+              <span className="breadcrumb-item active" aria-current="page">Shop</span>
             </nav>
           </div>
         </div>
@@ -71,29 +62,15 @@ function Shop() {
                   <p>Showing 1–{products.length} of {products.length} results</p>
                 </div>
                 <div className="sort-by">
-                  <select
-                    id="input-sort"
-                    className="form-control"
-                    data-filter-sort=""
-                    data-filter-order=""
-                  >
+                  <select id="input-sort" className="form-control" data-filter-sort="" data-filter-order="">
                     <option value="">Default sorting</option>
-                    <option value="">Name (A - Z)</option>
-                    <option value="">Name (Z - A)</option>
-                    <option value="">Price (Low-High)</option>
-                    <option value="">Price (High-Low)</option>
-                    <option value="">Rating (Highest)</option>
-                    <option value="">Rating (Lowest)</option>
-                    <option value="">Model (A - Z)</option>
-                    <option value="">Model (Z - A)</option>
+                    {/* Add other sorting options */}
                   </select>
                 </div>
               </div>
               <div className="product-grid row row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
                 {products.map((product) => (
-                  <div className="col" key={product.id} onClick={() => {
-                    openProduct(product.product,product.image )
-                  }}>
+                  <div className="col" key={product.id} onClick={() => openProduct(product.product, product.image)}>
                     <div className="product-item">
                       {product.discount && (
                         <span className="badge bg-success position-absolute m-3">
@@ -106,71 +83,31 @@ function Shop() {
                         </svg>
                       </a>
                       <figure>
-                          <img
-                            src={product.image}
-                            alt={product.product}
-                            className="tab-image"
-                          />
+                        <img src={product.image} alt={product.product} className="tab-image" />
                       </figure>
-                      <h3>{product.product}</h3>
-                      {/* <span className="qty">{product.quantity} Unit</span>
-                      <span className="rating">
-                        <svg width={24} height={24} className="text-primary">
-                          <use xlinkHref="#star-solid" />
-                        </svg>{" "}
-                      </span> */}
+                      {/* <h3>{product.product}</h3> */}
+                      {/* Truncate long descriptions */}
+                      <h3 className="product-description">
+                        {product.product.length > 100
+                          ? `${product.product.slice(0, 100)}...`
+                          : product.product}
+                      </h3>
                       <div className="d-flex align-items-center justify-content-between">
-                        <div className="input-group product-qty">
-                          {/* <span className="input-group-btn">
-                            <button
-                              type="button"
-                              className="quantity-left-minus btn btn-danger btn-number"
-                              data-type="minus"
-                            >
-                              <svg width={16} height={16}>
-                                <use xlinkHref="#minus" />
-                              </svg>
-                            </button>
-                          </span>
-                          <input
-                            type="text"
-                            name="quantity"
-                            className="form-control input-number quantity"
-                            defaultValue={1}
-                          />
-                          <span className="input-group-btn">
-                            <button
-                              type="button"
-                              className="quantity-right-plus btn btn-success btn-number"
-                              data-type="plus"
-                            >
-                              <svg width={16} height={16}>
-                                <use xlinkHref="#plus" />
-                              </svg>
-                            </button>
-                          </span> */}
-                        </div>
-                        {/* <a href="#" className="nav-link">
-                          Add to Cart{" "}
-                          <svg width={18} height={18}>
-                            <use xlinkHref="#cart" />
-                          </svg>
-                        </a> */}
+                        {/* Additional product info or buttons */}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              {/* / product-grid */}
               <nav className="text-center py-4" aria-label="Page navigation">
-                {/* Pagination code remains the same */}
+                {/* Pagination */}
               </nav>
             </main>
           </div>
         </div>
       </div>
       <section className="py-5">
-        {/* Discount section remains the same */}
+        {/* Discount section */}
       </section>
     </>
   );

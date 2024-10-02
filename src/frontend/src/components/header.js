@@ -36,26 +36,23 @@ function Header() {
   return (
     <>
       <header>
-        <div className="container-fluid">
-          <div className="row py-3 border-bottom">
-            <div className="col-sm-4 col-lg-3 text-center text-sm-start">
+        <div className="container-fluid mt-3" >
+          <div className="row border-bottom">
+            <div className="col-sm-4 col-lg-4 text-center text-sm-start">
               <div className="main-logo">
                 <a href="/">
                   <img src="images/logo.png" alt="logo" className="img-fluid" />
                 </a>
               </div>
             </div>
-            <div className="col-sm-8 offset-sm-1 offset-md-0 col-lg-8 d-none d-lg-block">
+            <div className="col-sm-6 offset-sm-1 offset-md-0 col-lg-6 d-none d-lg-block">
            
              <div className="search-bar-container position-relative">
               <div className="search-bar row bg-light p-2 my-2 rounded-4">
                <div className="col-md-3 d-none d-md-block">
-                 <select className="form-select border-0 bg-transparent">
-                      <option>Search Products</option>
-                      
-                    </select>
+                
                   </div>
-                  <div className="col-11 col-md-7">
+                  <div className="col-11">
                     <form
                       id="search-form"
                       className="text-center"
@@ -67,10 +64,11 @@ function Header() {
                         placeholder="Search for more than 20,000 products"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ width: '105%' }} // Make input take full width
+                        style={{ width: '100%' }} // Make input take full width
                      />
                     </form>
                   </div>
+                  
 
                   <div className="col-1">
                     <svg
@@ -210,14 +208,11 @@ function Header() {
                 )}
               </div>
             </div>
+            <div className="col-2">
+            <div id="google_translate_element"></div>
+            </div>
 
-            <div className="col-sm-8 col-lg-4 d-flex justify-content-end gap-5 align-items-center mt-4 mt-sm-0 justify-content-center justify-content-sm-end">
-              <div className="support-box text-end d-none d-xl-block">
-                
-              </div>
-
-           
-              </div>
+    
             </div>
             {/* Other header content */}
           </div>

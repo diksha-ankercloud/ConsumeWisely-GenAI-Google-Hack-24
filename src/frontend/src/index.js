@@ -19,6 +19,25 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+const loadGoogleTranslate = () => {
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+  document.body.appendChild(script);
+};
+
+// Function to initialize the Google Translate element
+window.googleTranslateElementInit = () => {
+  new window.google.translate.TranslateElement({
+    pageLanguage: 'en', // Default language of the page
+    includedLanguages: 'en,es,fr,de,hi', // Languages to include
+    layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+};
+
+// Load Google Translate when the app starts
+loadGoogleTranslate();
+
 root.render(
   <>
     <title>Consume Wisely with AI </title>
@@ -30,6 +49,7 @@ root.render(
     <meta name="author" content="" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
+    
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
@@ -47,6 +67,7 @@ root.render(
       href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
+    
     <svg xmlns="http://www.w3.org/2000/svg" style={{ display: "none" }}>
       <defs>
         <symbol
@@ -310,16 +331,15 @@ root.render(
             <p>© 2023 ConsumeWisely. All rights reserved.</p>
           </div>
           <div className="col-md-6 credit-link text-start text-md-end">
-            <p>
-              Free HTML Template by{" "}
-              <a href="https://templatesjungle.com/">TemplatesJungle</a>
-            </p>
+        
           </div>
         </div>
       </div>
     </div>
   </>
 );
+
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

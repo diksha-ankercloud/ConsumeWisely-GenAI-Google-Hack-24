@@ -29,6 +29,12 @@ function Product({}) {
   const [personaliseResponse, setPersonaliseResponse] = useState("");
   const [activeTab, setActiveTab] = useState("description");
 
+  const [personaliseLoader, setPersonaliseLoader] = useState(false);
+  const [verifyClaimLoader, setVerifyClaimLoader] = useState(false);
+
+  const [resubmit, setResubmit] = useState(false);
+
+
   const [recipe, setRecipe] = useState("");
   const [tabContent, setTabContent] = useState("");
 
@@ -58,8 +64,8 @@ function Product({}) {
     }/search_image?query=${decodeURI(product.name)}&side=back&total=5`;
 
     try {
-      const response = await axios.get(url);
-      setProductImages(response.data);
+      // const response = await axios.get(url);
+      // setProductImages(response.data);
       console.log(productImages);
     } catch (error) {
       console.error("Error fetching search results:", error);
@@ -67,7 +73,6 @@ function Product({}) {
   };
 
   const handlePersonalise = async () => {
-    console.log(123456);
     const url = `${process.env.REACT_APP_API_ENDPOINT}/analyze_product`;
     const payload = {
       age: personalise_age,
@@ -77,12 +82,14 @@ function Product({}) {
       diet_type: personalise_diet_type,
       health_goal: personalise_health_goal,
       allergen: personalise_allergen,
-      product_name: personalise_product_name,
+      product_name: productDetails.product_name,
     };
 
     try {
       const response = await axios.post(url, payload);
       setPersonaliseResponse(response.data);
+      setResubmit(true)
+      setPersonaliseLoader(false)
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
@@ -94,6 +101,7 @@ function Product({}) {
     try {
       const response = await axios.get(url);
       setClaimData(JSON.parse(response.data));
+      setVerifyClaimLoader(false)
       console.log(claimData?.verdict);
     } catch (error) {
       console.error("Error fetching search results:", error);
@@ -146,7 +154,28 @@ function Product({}) {
                   {/* product-thumbnail-slider */}
                   <div className="swiper product-thumbnail-slider">
                     <div className="">
-                      {productImages &&
+                    <div className="swiper-slide">
+                              <img
+                                src={product.image}
+                                alt=""
+                                className="thumb-image img-fluid"
+                                onClick={() => setProductImage(product.image)}
+                              />
+                            </div>
+                    {
+                          productDetails && Object.values(productDetails?.images)?.map((image)=>{
+                            return ( <div className="swiper-slide">
+                              <img
+                                src={image}
+                                alt=""
+                                className="thumb-image img-fluid"
+                                onClick={() => setProductImage(image)}
+                              />
+                            </div>)
+                          })
+                        }
+                        {/* <h3>{productDetails?.images}</h3> */}
+                      {/* {!productDetails?.images &&
                         productImages?.map((image) => {
                           return (
                             <div className="swiper-slide">
@@ -158,7 +187,8 @@ function Product({}) {
                               />
                             </div>
                           );
-                        })}
+                        })} */}
+                        
                     </div>
                   </div>
                   {/* / product-thumbnail-slider */}
@@ -353,14 +383,21 @@ function Product({}) {
                             />
                           </div>
                           <div className="col-2">
-                            <span
+                            {!verifyClaimLoader && <span
                               className="btn btn-primary mb-3"
                               onClick={() => {
                                 checkClaim(claimText, ingredients);
+                                setVerifyClaimLoader(true)
                               }}
                             >
-                              Check
-                            </span>
+                              Submit
+                            </span>}
+                            {
+                              verifyClaimLoader && <div className="spinner-border" role="status">
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                            
+                            }
                           </div>
                         </form>
                         <p>
@@ -385,178 +422,150 @@ function Product({}) {
                         <div>
                           {Object.keys(personaliseResponse).map((key) => (
                             <div key={key}>
-                              <strong>{key}:</strong> {personaliseResponse[key]}
+                              <strong>{ key.charAt(0).toUpperCase() + key.slice(1) }:</strong> { personaliseResponse[key].charAt(0).toUpperCase() + personaliseResponse[key].slice(1)}
                             </div>
                           ))}
                         </div>
                         {!personaliseResponse && (
-                          <div className="row">
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label htmlFor="" className="form-label">
-                                  Age:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id=""
-                                  placeholder="Enter Your Age"
-                                  value={personalise_age}
-                                  onChange={(e) =>
-                                    setPersonalise_age(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label htmlFor="" className="form-label">
-                                  Weight:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Your Weight"
-                                  value={personalise_weight}
-                                  onChange={(e) =>
-                                    setPersonalise_weight(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="exampleFormControlInput1"
-                                  className="form-label"
-                                >
-                                  Gender:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Your Gender."
-                                  value={personalise_gender}
-                                  onChange={(e) =>
-                                    setPersonalise_gender(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="exampleFormControlInput1"
-                                  className="form-label"
-                                >
-                                  Height:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Your Height"
-                                  value={personalise_height}
-                                  onChange={(e) =>
-                                    setPersonalise_height(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="exampleFormControlInput1"
-                                  className="form-label"
-                                >
-                                  Diet Type:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Diet Type"
-                                  value={personalise_diet_type}
-                                  onChange={(e) =>
-                                    setPersonalise_diet_type(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="exampleFormControlInput1"
-                                  className="form-label"
-                                >
-                                  Health Goal:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Your Health Goal"
-                                  value={personalise_health_goal}
-                                  onChange={(e) =>
-                                    setPersonalise_health_goal(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="exampleFormControlInput1"
-                                  className="form-label"
-                                >
-                                  Allergen:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Alergen"
-                                  value={personalise_allergen}
-                                  onChange={(e) =>
-                                    setPersonalise_allergen(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="exampleFormControlInput1"
-                                  className="form-label"
-                                >
-                                  Product Name:
-                                </label>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  id="exampleFormControlInput1"
-                                  placeholder="Enter Product Name"
-                                  value={personalise_product_name}
-                                  onChange={(e) =>
-                                    setPersonalise_product_name(e.target.value)
-                                  }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
+  <div className="row">
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="age" className="form-label">
+          Age:
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="age"
+          placeholder="Enter Your Age"
+          value={personalise_age}
+          onChange={(e) => setPersonalise_age(e.target.value)}
+        />
+      </div>
+    </div>
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="weight" className="form-label">
+          Weight:
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="weight"
+          placeholder="Enter Your Weight (Kg)"
+          value={personalise_weight}
+          onChange={(e) => setPersonalise_weight(e.target.value)}
+        />
+      </div>
+    </div>
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="gender" className="form-label">
+          Gender:
+        </label>
+        <select
+          className="form-control"
+          id="gender"
+          value={personalise_gender}
+          onChange={(e) => setPersonalise_gender(e.target.value)}
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="height" className="form-label">
+          Height:
+        </label>
+        <input
+          type="number"
+          className="form-control"
+          id="height"
+          placeholder="Enter Your Height (Inches)"
+          value={personalise_height}
+          onChange={(e) => setPersonalise_height(e.target.value)}
+        />
+      </div>
+    </div>
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="dietType" className="form-label">
+          Diet Type:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="dietType"
+          placeholder="Enter Diet Type"
+          value={personalise_diet_type}
+          onChange={(e) => setPersonalise_diet_type(e.target.value)}
+        />
+      </div>
+    </div>
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="healthGoal" className="form-label">
+          Health Goal:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="healthGoal"
+          placeholder="Enter Your Health Goal"
+          value={personalise_health_goal}
+          onChange={(e) => setPersonalise_health_goal(e.target.value)}
+        />
+      </div>
+    </div>
+    <div className="col-6">
+      <div className="mb-3">
+        <label htmlFor="allergen" className="form-label">
+          Allergen:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="allergen"
+          placeholder="Enter Allergen"
+          value={personalise_allergen}
+          onChange={(e) => setPersonalise_allergen(e.target.value)}
+        />
+      </div>
+    </div>
+  </div>
+)}
+
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                          <button
+                          {!resubmit && !personaliseLoader && <button
                             class="btn btn-primary"
                             type="button"
                             onClick={() => {
                               handlePersonalise();
+                              setPersonaliseLoader(true)
                             }}
                           >
                             Submit
+                          </button> }
+                          { personaliseLoader && <div className="spinner-border" role="status">
+  <span className="visually-hidden">Loading...</span>
+</div>
+}
+
+                         { resubmit && <button
+                            class="btn btn-primary"
+                            type="button"
+                            onClick={() => {
+                              setPersonaliseResponse("");
+                              setResubmit(false)
+                            }}
+                          >
+                            Resubmit
                           </button>
+}
                         </div>
                       </div>
                     </div>

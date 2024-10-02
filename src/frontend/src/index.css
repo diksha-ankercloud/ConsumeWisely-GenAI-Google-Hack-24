@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#google_translate_element {
+  float: right; /* Example: Aligning the dropdown to the right */
+  margin-top: 10px;
+}

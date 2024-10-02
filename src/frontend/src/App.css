@@ -712,6 +712,7 @@ border-bottom: 3px solid var(--accent-color);
 gap: 25px;
 } */
 .product-item {
+height: 350px;
 position: relative;
 padding: 16px;
 background: #FFFFFF;
