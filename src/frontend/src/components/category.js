@@ -27,7 +27,7 @@ function Category() {
                   >
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item"
                       >
                         <img
@@ -41,7 +41,7 @@ function Category() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
@@ -53,7 +53,7 @@ function Category() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
@@ -65,7 +65,7 @@ function Category() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img

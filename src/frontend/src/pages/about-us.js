@@ -1,9 +1,8 @@
+import React from 'react';
 
 function AboutUs() {
-
   return (
     <>
-     
       <section
         className="py-5 mb-5"
         style={{ background: "url(images/background-pattern.jpg)" }}
@@ -25,77 +24,96 @@ function AboutUs() {
           </div>
         </div>
       </section>
+
       <section className="company-detail py-4">
-        <div className="container-fluid">
+        <div className="container">
           <div className="row">
             <div className="col-md-12">
-              <blockquote>
-              Headline: ConsumeWise: Your AI-Powered Guide to Healthier Choices </blockquote>
-              <p>
-                <strong>Accurate Product Data</strong> 
-                Real-time information on nutritional content, ingredients, and processing methods.
+              <blockquote className="blockquote">
+                <h2>ConsumeWisely: Your AI-Powered Guide to Healthier Choices</h2>
+              </blockquote>
+              <p className="lead">
+                At ConsumeWisely, we provide <strong>real-time information</strong> on nutritional content, ingredients, and processing methods, helping you make better food choices.
               </p>
             </div>
           </div>
-          <h2>Scan, Analyze, Choose Better</h2>
-          <div className="row">
+
+          <h3 className="mt-4">Scan, Analyze, Choose Better</h3>
+          <div className="row mt-3">
             <div className="col-md-12">
-               <p>Multi-Modal Access: Scan labels, search for products, or use voice commands.</p>
-                </div>
-           
               <p>
-              We want to build a transparent, scalable, and inclusive benchmarking Brands/Products, aiming to measure and improve the performance of AI across diverse domains and multiple modalities, in every language.
+                <strong>Multi-Modal Access:</strong> Scan labels, search for products, or use voice commands for quick and easy access to important nutritional insights.
               </p>
-              
-              <p><h2>Why Choose ConsumeWisely?</h2></p>
               <p>
-                Accurate Data: Our system ensures precise data capture from product labels, keeping you informed.
-                Dynamic Updates: We constantly update our database as new products hit the market.
-                Exhaustive Catalog: With partnerships across leading retailers like Blinkit and BigBasket, we provide a vast array of products.
-                Insightful Augmentation: From categorizing products based on your preferences to enriching the raw data for enhanced understanding.
+                We aim to build a transparent, scalable, and inclusive system for benchmarking brands and products, measuring AI performance across diverse domains, multiple modalities, and every language.
               </p>
-              <p> Personalized Health Analysis: Tailored recommendations based on your dietary needs and preferences.</p>
-      
-            
-              <p>To some food experts, packaged foods are a cardinal sin. But some packaged foods are better than others. Curious to know which packaged foods you should add to your diet? Tap on Personalise button to get all the information about product
+            </div>
+          </div>
+
+          <h3 className="mt-5">Why Choose ConsumeWisely?</h3>
+          <div className="row mt-3">
+            <div className="col-md-12">
+              <ul>
+                <li><strong>Accurate Data:</strong> Precise data capture from product labels, ensuring you stay informed.</li>
+                <li><strong>Dynamic Updates:</strong> Our database is constantly updated with the latest products in the market.</li>
+                <li><strong>Exhaustive Catalog:</strong> Partnerships with leading retailers like Blinkit and BigBasket provide you with a wide array of products.</li>
+                <li><strong>Insightful Augmentation:</strong> Enhanced data based on your preferences for a better understanding of the products.</li>
+              </ul>
+              <p>
+                <strong>Personalized Health Analysis:</strong> Tailored recommendations based on your dietary needs and preferences, making it easier to find healthier options.
               </p>
+            </div>
+          </div>
+
+          <div className="row mt-5">
+            <div className="col-md-12">
+              <p>
+                Curious to know which packaged foods are best for your diet? Click the "Personalize" button to get detailed information about products that fit your lifestyle.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
       <section className="py-5 my-5">
         <div className="container-fluid">
           <div
             className="bg-warning py-5 rounded-5"
-            style={{
-              backgroundImage: 'url("images/bg-pattern-2.png") no-repeat',
-            }}
+            style={{ backgroundImage: 'url("images/bg-pattern-2.png")' }}
           >
             <div className="container">
               <div className="row">
-                <div className="col-md-12">
-                  <h2 className="my-5">Shop faster with foodmart App</h2>
-                  <p>
-                  <h4><strong>What We Solve For:</strong></h4>
+                <div className="col-md-12 text-center">
+                  <h2 className="my-5">Shop Smarter with the Foodmart App</h2>
+                  <p className="lead">
+                    Our platform empowers you to make better food choices with:
+                  </p>
 
-<p> <strong>Timely Insights:</strong>Timely Insights: Our platform provides nutritional information right when you're about to make a decision.
-</p>
-<p><strong>User-Friendly Experience:</strong>
- Information is presented in a clear and intuitive way, reducing cognitive overload and helping you focus on the essentials.
-
-</p>
-<p><strong>Accessibility:</strong>
-: Available across multiple interfaces and languages, ensuring everyone can make healthier choices.
-
-</p>
- </p>
-               
+                  <div className="row">
+                    <div className="col-md-4">
+                      <h4><strong>Timely Insights</strong></h4>
+                      <p>
+                        Nutritional information is available when you need it most—right before you make a purchase.
+                      </p>
+                    </div>
+                    <div className="col-md-4">
+                      <h4><strong>User-Friendly Experience</strong></h4>
+                      <p>
+                        Intuitive design ensures all information is clear and easy to digest, minimizing cognitive load.
+                      </p>
+                    </div>
+                    <div className="col-md-4">
+                      <h4><strong>Accessibility</strong></h4>
+                      <p>
+                        Available across multiple interfaces and in various languages, making healthier choices accessible to everyone.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        
       </section>
     </>
   );

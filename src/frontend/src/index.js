@@ -327,9 +327,7 @@ root.render(
     <div id="footer-bottom">
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-6 copyright">
-            <p>© 2023 ConsumeWisely. All rights reserved.</p>
-          </div>
+          
           <div className="col-md-6 credit-link text-start text-md-end">
         
           </div>

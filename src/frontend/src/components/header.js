@@ -2,13 +2,24 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function Header() {
+
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showSearchModal, setShowSearchModal] = useState(false);
 
-  const removeHtmlTags = (str) => {
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-  };
+  // const removeHtmlTags = (str) => {
+  //   return str.replace(/<\/?[^>]+(>|$)/g, "");
+  // };
+
+  const removeHtmlTags = (searchString) => {
+    // Remove unwanted words and special characters
+    let product = searchString.replace(/\b(?:Buy|Online|At\s+Best\s+Price\s+Of\s+Rs|Rs|Only|For)\b|[^a-zA-Z0-9\s]+/g, "");
+    product = product.replace(/<\/?[^>]+(>|$)/g, "");
+    // Replace multiple spaces with a single space and trim leading/trailing spaces
+    product = product.replace(/\s+/g, " ").trim();
+    
+    return product;
+  }
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -41,7 +52,7 @@ function Header() {
             <div className="col-sm-4 col-lg-4 text-center text-sm-start">
               <div className="main-logo">
                 <a href="/">
-                  <img src="images/logo.png" alt="logo" className="img-fluid" />
+                  <img src="images/logo.png" alt="logo" className="img-fluid" style={{maxWidth: "50%"}}/>
                 </a>
               </div>
             </div>
@@ -70,7 +81,7 @@ function Header() {
                   </div>
                   
 
-                  <div className="col-1">
+                  <div className="col-1" onClick={handleSearch}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width={24}
@@ -169,8 +180,8 @@ function Header() {
                                 <div className="col-9">
                                 <strong>
                                    {result.htmlTitle.match(/<b>(.*?)<\/b>/)
-                                    ? result.htmlTitle.match(/<b>(.*?)<\/b>/)[1]
-                                    : result.title}
+                                    ? removeHtmlTags(result.htmlTitle.match(/<b>(.*?)<\/b>/)[1])
+                                    : removeHtmlTags(result.title)}
                                 </strong>
                                 <br></br>
                                 <span

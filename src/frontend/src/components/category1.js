@@ -18,7 +18,7 @@ function Category1() {
                   >
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item"
                       >
                         <img
@@ -33,7 +33,7 @@ function Category1() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
@@ -45,7 +45,7 @@ function Category1() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
@@ -57,7 +57,7 @@ function Category1() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
@@ -69,7 +69,7 @@ function Category1() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
@@ -81,7 +81,7 @@ function Category1() {
                     </SwiperSlide>
                     <SwiperSlide>
                       <a
-                        href="category.html"
+                        href="#"
                         className="nav-link category-item "
                       >
                         <img
