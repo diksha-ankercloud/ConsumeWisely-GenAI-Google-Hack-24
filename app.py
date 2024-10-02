@@ -6,7 +6,7 @@ from google.cloud import firestore
 from vertexai.generative_models import GenerativeModel, Tool, grounding
 from googleapiclient.discovery import build
 from flask_cors import CORS
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r"C:\Users\VishnuKumar\Downloads\chat-bot-ui\vision-forge-414908-d792f2fc2ff6 (1).json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] =r""
 vertexai.init(project="", location="")
 cxid = ""
 apikey = ""
