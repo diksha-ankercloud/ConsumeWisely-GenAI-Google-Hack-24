@@ -10,7 +10,7 @@ At ConsumeWisely, we leverage Generative AI to automate the collection of data f
 
 ![image](https://github.com/user-attachments/assets/81189f3a-4573-4ac0-a991-b8f40ddf156e)
 
-![image](https://github.com/user-attachments/assets/1f1ed9eb-07f9-4eb8-89a9-b32be91733ee)
+![image](https://github.com/user-attachments/assets/ca03bc73-3c6d-4cde-876d-0acf6208e859)
 
 ![image](https://github.com/user-attachments/assets/c15b9a63-47b7-4309-8d3d-889c3e19240b)
 
