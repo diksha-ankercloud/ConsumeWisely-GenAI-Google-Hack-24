@@ -8,6 +8,13 @@ This AI-powered platform simplifies label reading and empowers healthier choices
 
 At ConsumeWisely, we leverage Generative AI to automate the collection of data from packaged food products, providing you with instant, reliable insights. From understanding the ingredients to the brand's nutritional claims, our AI-driven product catalog helps you make informed as well as easy non-cluttered decisions about the foods you consume.
 
+![image](https://github.com/user-attachments/assets/81189f3a-4573-4ac0-a991-b8f40ddf156e)
+
+![image](https://github.com/user-attachments/assets/1f1ed9eb-07f9-4eb8-89a9-b32be91733ee)
+
+![image](https://github.com/user-attachments/assets/c15b9a63-47b7-4309-8d3d-889c3e19240b)
+
+
 ## Features
 
 ### 1. Quick AI Scan
@@ -22,6 +29,9 @@ Provides complete product details including:
 - Recent news about the product
 - Per serving ingredients and nutrients
 - False claims check
+![image](https://github.com/user-attachments/assets/99a95c62-8b4a-41a5-8eee-7acde62f2eba)
+
+![image](https://github.com/user-attachments/assets/f90cc545-cd0e-466a-bdb7-0f8c550f6175)
 
 ### 2. Personalized Consumption Analysis
 Based on user's physical attributes and health goals:
@@ -30,21 +40,29 @@ Based on user's physical attributes and health goals:
 - Consumption and allergy alerts
 - Diet suitability check
 - Carbon footprint assessment of product and company
+  
+![image](https://github.com/user-attachments/assets/87cd3a21-6ce5-4928-bf9d-d6b65c028f26)
+![image](https://github.com/user-attachments/assets/41200c92-f963-439f-bf31-c06d95ceca89)
 
 ### 3. Recipe Recommendations
 - Tailored recipes based on user's diet plan and requirements
 - Suggestions incorporating current product choices
+![image](https://github.com/user-attachments/assets/ca505b54-d4a8-4472-8140-54ec4256450e)
 
 ### 4. Dynamic Product Catalog
 - Exhaustive and continuously updated catalog
 - End-to-end information on food products across the internet
+![image](https://github.com/user-attachments/assets/969c8ac0-f678-4d23-bb57-26857d60e177)
+
 
 ### 5. Intelligent Chatbot
 - Assists with multi-modal inputs
 - Enables scanning of physical products
+![image](https://github.com/user-attachments/assets/95bc74f8-501d-4af8-8f0b-0b7d9439fe02)
 
 ### 6. Multilingual Support
 - Allows users to navigate the website in their preferred language
+![image](https://github.com/user-attachments/assets/afeeea14-55a3-4c68-a2bd-a3d90e037965)
 
 ### Steps to setup project
 
